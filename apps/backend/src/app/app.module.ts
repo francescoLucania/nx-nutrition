@@ -6,6 +6,8 @@ import { AppService } from './app.service';
 import { ServeStaticModule } from "@nestjs/serve-static";
 import path from "path";
 import {MongooseModule} from "@nestjs/mongoose";
+import { UserModule } from './user/user.module';
+import { FileModule } from './user/file/file.module';
 
 @Module({
   controllers: [AppController],
@@ -16,13 +18,16 @@ import {MongooseModule} from "@nestjs/mongoose";
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (config: ConfigService) => {
-        console.log(config.get('DATABASE_URL'))
         return ({
           uri: config.get('DATABASE_URL'),
+          user: config.get('DATABASE_LOGIN'),
+          pass: config.get('DATABASE_PASS')
         })
       },
       inject: [ConfigService],
     }),
+    UserModule,
+    FileModule
   ]
 })
 export class AppModule {

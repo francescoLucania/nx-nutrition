@@ -19,6 +19,9 @@
         "assets": ["apps/frontend/src/favicon.ico", "apps/frontend/src/assets"],
         "styles": ["apps/frontend/src/styles.scss"],
         "scripts": [],
+        "stylePreprocessorOptions": {
+          "includePaths": ["node_modules"]
+        },
         "server": "apps/frontend/src/main.server.ts",
         "prerender": true,
         "ssr": {

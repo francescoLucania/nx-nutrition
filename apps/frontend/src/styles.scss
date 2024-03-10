@@ -1,1 +1,11 @@
-/* You can add global styles to this file, and also import other style files */
+@forward 'normalize.css/normalize';
+@forward 'assets/styles/fonts';
+@forward 'ngx-neo-ui/assets/styles/theme-provider/base-styles/styles';
+@forward 'ngx-neo-ui/assets/styles/theme-provider/common/accessibility/accessibility';
+@forward 'ngx-neo-ui/assets/styles/theme-provider/common/offsets/offsets';
+@forward 'ngx-neo-ui/assets/styles/theme-provider/base-styles/typography/typography';
+@forward 'ngx-neo-ui/assets/styles/theme-provider/base-styles/container/container';
+
+:root {
+  --baseFont: #{'SF Pro Display', Arial, Helvetica, sans-serif};
+}
