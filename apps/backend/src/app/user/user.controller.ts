@@ -1,4 +1,14 @@
-import { Response, Body, Controller, Get, Param, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import {
+  Response,
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UploadedFiles,
+  UseInterceptors,
+  HttpException, HttpStatus
+} from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
@@ -26,13 +36,18 @@ export class UserController {
       const userData = await this.userService.create({
         ...dto,
       }, picture);
-      // @ts-ignore
       res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 100, httpOnly: true})
 
       return res.send(userData);
     } catch (e) {
-      throw new Error(e);
+      console.log('e', JSON.stringify(e));
+      throw new Error(e)
     }
+  }
+
+  @Get('/activate')
+  activate(@Param('link') link: string) {
+    return this.userService.activate(link);
   }
 
   @Get('/deleteAllUsers')
@@ -54,5 +69,4 @@ export class UserController {
   refresh(@Param('id') id: ObjectId) {
     return this.userService.logout();
   }
-
 }

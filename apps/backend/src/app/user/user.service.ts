@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schemas/user.schema';
 import { FileService, FileType } from './file/file.service';
@@ -25,41 +25,39 @@ export class UserService {
   }
 
   async create(dto: CreateUserDto, picture): Promise<any> {
-    const condidate = await this.userModel.findOne({email: dto.email})
-    if (!condidate) {
+    const condidateMail = await this.userModel.findOne({email: dto.email})
+    const condidatePhone = await this.userModel.findOne({email: dto.email})
+    if (!condidateMail && !condidatePhone) {
       const picturePath = this.fileService.createFile(FileType.IMAGE, picture);
       dto.password = await bcrypt.hash(dto.password, 3);
 
+      const activationLink = uuidv4();
+      const date = new Date();
       const creatUser = await this.userModel.create(
         {
           ...dto,
           listens: 0,
           picture: picturePath,
-          activationLink: 'test',
-          lastActivity: 'test',
-          created: 'test'
+          activationLink: activationLink,
+          lastActivity: date,
+          created: date,
         })
 
 
-      this.mailService.sendActivationMail(dto.email, uuidv4());
+      this.mailService.sendActivationMail(dto.email, `${this.configService.get('DOMAIN')}/api/user/activation${activationLink}`);
 
       const userDto = new UserDto(creatUser);
       const tokens = this.tokenService.generateTokens({...userDto});
       await this.tokenService.saveToken(userDto.id, tokens);
-
-      const result = async () => {
-        return {
-        ...userDto,
-        ...tokens
-        }
-      }
 
       return  {
         ...userDto,
         ...tokens
       };
     } else {
-      throw new Error(`Пользователь с email ${dto.email} существует`)
+      const errorContactType = condidatePhone ? `c телефоном ${dto.phone}` : `c почтой ${dto.email}`;
+      // throw new HttpException(`Пользователь ${errorContactType} существует`, HttpStatus.FORBIDDEN);
+      throw new Error(`Пользователь ${errorContactType} существует`)
     }
   }
 
