@@ -24,6 +24,7 @@ export class MailService {
   }
   sendActivationMail(to, link) {
     console.log('to', to)
+    console.log('link', link)
     this.transporter.sendMail({
       to,
       from: this.configService.get('SMTP_USER'),
@@ -32,7 +33,6 @@ export class MailService {
       html: `<div><h1>Для активации личного кабинета перейдите по ссылке:</h1>
               <div style="margin-top: 16px">Ссылка для активации: <a href="${link}" target="_blank">${link}</a> </div>
             </div>
-
             `
     })
   }

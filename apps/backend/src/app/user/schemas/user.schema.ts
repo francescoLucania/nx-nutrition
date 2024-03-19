@@ -29,7 +29,7 @@ export class User {
   @Prop({unique: true, required: true, default: false})
   isActivated: boolean;
 
-  @Prop({unique: false, required: true})
+  @Prop({unique: false, required: false})
   activationLink: string;
 
   _id: mongoose.Types.ObjectId;

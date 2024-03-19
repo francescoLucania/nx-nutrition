@@ -11,6 +11,7 @@ import { TokenService } from './services/token/token.service';
 import { UserDto } from './dto/user-public.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
+import ApiError from '../exception/api-error/api-error';
 
 @Injectable()
 export class UserService {
@@ -25,8 +26,8 @@ export class UserService {
   }
 
   async create(dto: CreateUserDto, picture): Promise<any> {
-    const condidateMail = await this.userModel.findOne({email: dto.email})
-    const condidatePhone = await this.userModel.findOne({email: dto.email})
+    const condidateMail = await this.userModel.findOne({email: dto.email});
+    const condidatePhone = await this.userModel.findOne({email: dto.email});
     if (!condidateMail && !condidatePhone) {
       const picturePath = this.fileService.createFile(FileType.IMAGE, picture);
       dto.password = await bcrypt.hash(dto.password, 3);
@@ -44,7 +45,7 @@ export class UserService {
         })
 
 
-      this.mailService.sendActivationMail(dto.email, `${this.configService.get('DOMAIN')}/api/user/activation${activationLink}`);
+      this.mailService.sendActivationMail(dto.email, `${this.configService.get('DOMAIN')}/api/user/activate?id=${activationLink}`);
 
       const userDto = new UserDto(creatUser);
       const tokens = this.tokenService.generateTokens({...userDto});
@@ -55,6 +56,7 @@ export class UserService {
         ...tokens
       };
     } else {
+      console.log(4)
       const errorContactType = condidatePhone ? `c телефоном ${dto.phone}` : `c почтой ${dto.email}`;
       // throw new HttpException(`Пользователь ${errorContactType} существует`, HttpStatus.FORBIDDEN);
       throw new Error(`Пользователь ${errorContactType} существует`)
@@ -70,7 +72,14 @@ export class UserService {
   }
 
   async activate(link: string): Promise<User> {
-    return await this.userModel.create({});
+    const activatedCandidate = await this.userModel.findOne({activationLink: link});
+    if (activatedCandidate) {
+      activatedCandidate.isActivated = true;
+      activatedCandidate.activationLink = null;
+    } else {
+      throw new ApiError(400, 'Некорректная ссылка активации')
+    }
+    return await activatedCandidate.save();
   }
 
   async deleteAllUsers(): Promise<null> {

@@ -7,7 +7,7 @@ import {
   Post,
   UploadedFiles,
   UseInterceptors,
-  HttpException, HttpStatus
+  HttpException, HttpStatus, Query
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -46,8 +46,29 @@ export class UserController {
   }
 
   @Get('/activate')
-  activate(@Param('link') link: string) {
-    return this.userService.activate(link);
+  async activate(
+    @Query() query: {id: string},
+    @Response() res,
+  ) {
+    console.log('link', query.id)
+    try {
+      const user = await this.userService.activate(query.id);
+      return res.send({
+        activation: user.isActivated,
+        userInfo: {
+          name: user.name,
+          fullName: user.fullName,
+          email: user.email,
+        }
+      });
+    } catch (e) {
+      throw new HttpException({
+        status: e.status,
+        error: e.message,
+      }, HttpStatus.FORBIDDEN, {
+        cause: e
+      });
+    }
   }
 
   @Get('/deleteAllUsers')
