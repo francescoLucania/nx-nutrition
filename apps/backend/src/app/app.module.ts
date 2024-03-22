@@ -27,7 +27,7 @@ import { FileModule } from './user/file/file.module';
       inject: [ConfigService],
     }),
     UserModule,
-    FileModule
+    FileModule,
   ]
 })
 export class AppModule {

@@ -5,15 +5,14 @@ import {
   Get,
   Param,
   Post,
-  UploadedFiles,
-  UseInterceptors,
-  HttpException, HttpStatus, Query
+  HttpException, HttpStatus, Query, UsePipes, UseInterceptors, UploadedFiles
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
 import { UserLoginDto } from './dto/user-login.dto';
 import { ObjectId } from 'mongoose';
+import { ValidationPipe } from '../pipes/validation/validation';
 
 
 @Controller('/user')
@@ -22,27 +21,38 @@ export class UserController {
   constructor(private userService: UserService) {
   }
 
+  @UsePipes(ValidationPipe)
   @Post('/create')
-  @UseInterceptors(FileFieldsInterceptor([
-    { name: 'avatar', maxCount: 1 },
-  ]))
+  // @UseInterceptors(FileFieldsInterceptor([
+  //   { name: 'avatar', maxCount: 1 },
+  // ]))
   async create(
-    @UploadedFiles() avatar,
+    // @UploadedFiles() avatar,
     @Body() dto: CreateUserDto,
     @Response() res,
   ) {
-    try {
-      const picture = avatar?.avatar[0];
-      const userData = await this.userService.create({
-        ...dto,
-      }, picture);
-      res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 100, httpOnly: true})
+    console.log('controller dto', dto);
+    // const picture = avatar?.avatar[0];
+    const userData = await this.userService.create({
+      ...dto,
+    });
+    res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 100, httpOnly: true})
 
-      return res.send(userData);
-    } catch (e) {
-      console.log('e', JSON.stringify(e));
-      throw new Error(e)
-    }
+    return res.send(userData);
+  }
+
+  @UsePipes(ValidationPipe)
+  @Post('/uploadAvatar')
+  @UseInterceptors(FileFieldsInterceptor([
+    { name: 'avatar', maxCount: 1 },
+  ]))
+  async uploadAvatar(
+    @UploadedFiles() avatar,
+    @Response() res,
+  ) {
+
+    const userData = { avatar: '...' }
+    return res.send(userData);
   }
 
   @Get('/activate')

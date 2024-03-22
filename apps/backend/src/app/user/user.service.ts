@@ -11,7 +11,7 @@ import { TokenService } from './services/token/token.service';
 import { UserDto } from './dto/user-public.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
-import ApiError from '../exception/api-error/api-error';
+import ValidationException from '../exception/validation/validation';
 
 @Injectable()
 export class UserService {
@@ -25,11 +25,15 @@ export class UserService {
   ) {
   }
 
-  async create(dto: CreateUserDto, picture): Promise<any> {
-    const condidateMail = await this.userModel.findOne({email: dto.email});
-    const condidatePhone = await this.userModel.findOne({email: dto.email});
-    if (!condidateMail && !condidatePhone) {
-      const picturePath = this.fileService.createFile(FileType.IMAGE, picture);
+  async create(dto: CreateUserDto): Promise<any> {
+    const searchByEmail = await this.userModel.findOne({email: dto.email});
+    const searchByPhone = await this.userModel.findOne({email: dto.email});
+    const user = searchByEmail || searchByPhone;
+    console.log('dto', dto)
+    console.log('user', user)
+    if (!user) {
+      console.log('dto', dto)
+      let picturePath;
       dto.password = await bcrypt.hash(dto.password, 3);
 
       const activationLink = uuidv4();
@@ -38,7 +42,7 @@ export class UserService {
         {
           ...dto,
           listens: 0,
-          picture: picturePath,
+          picture: picturePath ? picturePath : 'unknown.jpg',
           activationLink: activationLink,
           lastActivity: date,
           created: date,
@@ -56,11 +60,13 @@ export class UserService {
         ...tokens
       };
     } else {
-      console.log(4)
-      const errorContactType = condidatePhone ? `c телефоном ${dto.phone}` : `c почтой ${dto.email}`;
-      // throw new HttpException(`Пользователь ${errorContactType} существует`, HttpStatus.FORBIDDEN);
-      throw new Error(`Пользователь ${errorContactType} существует`)
+      const errorContactType = searchByPhone ? `c телефоном ${dto.phone}` : `c почтой ${dto.email}`;
+      throw new ValidationException(`Пользователь ${errorContactType} уже зарегестрирован`)
     }
+  }
+
+  saveAvatar(picture) {
+    const picturePath = this.fileService.createFile(FileType.IMAGE, picture);
   }
 
   async login(dto: UserLoginDto): Promise<User> {
@@ -77,7 +83,7 @@ export class UserService {
       activatedCandidate.isActivated = true;
       activatedCandidate.activationLink = null;
     } else {
-      throw new ApiError(400, 'Некорректная ссылка активации')
+      throw new Error('Некорректная ссылка активации')
     }
     return await activatedCandidate.save();
   }
