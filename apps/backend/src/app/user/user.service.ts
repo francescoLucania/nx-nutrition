@@ -1,12 +1,11 @@
 import { Model } from 'mongoose';
-import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schemas/user.schema';
 import { FileService, FileType } from './file/file.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UserLoginDto } from './dto/user-login.dto';
 import { MailService } from '../services/mail/mail.service';
-import bcrypt from 'bcryptjs'
+import bcrypt from 'bcryptjs';
 import { TokenService } from './services/token/token.service';
 import { UserDto } from './dto/user-public.dto';
 import { v4 as uuidv4 } from 'uuid';
@@ -25,14 +24,11 @@ export class UserService {
   ) {
   }
 
-  async create(dto: CreateUserDto): Promise<any> {
-    const searchByEmail = await this.userModel.findOne({email: dto.email});
-    const searchByPhone = await this.userModel.findOne({email: dto.email});
+  async create(dto: CreateUserDto): Promise<UserDto> {
+    const searchByEmail = await this.searchUser({email: dto.email});
+    const searchByPhone = await this.searchUser({email: dto.email});
     const user = searchByEmail || searchByPhone;
-    console.log('dto', dto)
-    console.log('user', user)
     if (!user) {
-      console.log('dto', dto)
       let picturePath;
       dto.password = await bcrypt.hash(dto.password, 3);
 
@@ -49,28 +45,66 @@ export class UserService {
         })
 
 
-      this.mailService.sendActivationMail(dto.email, `${this.configService.get('DOMAIN')}/api/user/activate?id=${activationLink}`);
+      this.mailService.sendActivationMail(
+        dto.email,
+        `${this.configService.get('DOMAIN')}/api/user/activate?id=${activationLink}`
+      );
 
-      const userDto = new UserDto(creatUser);
-      const tokens = this.tokenService.generateTokens({...userDto});
-      await this.tokenService.saveToken(userDto.id, tokens);
-
-      return  {
-        ...userDto,
-        ...tokens
-      };
+      const user = new UserDto(creatUser);
+      return await this.buildUserAuthData(user);
     } else {
       const errorContactType = searchByPhone ? `c телефоном ${dto.phone}` : `c почтой ${dto.email}`;
       throw new ValidationException(`Пользователь ${errorContactType} уже зарегестрирован`)
     }
   }
 
-  saveAvatar(picture) {
+  saveAvatar(picture: any) {
     const picturePath = this.fileService.createFile(FileType.IMAGE, picture);
   }
 
-  async login(dto: UserLoginDto): Promise<User> {
-    return await this.userModel.create({});
+  async login(login: string, password: string): Promise<UserDto> {
+    const userSearchByEmail = await this.searchUser({email: login});
+
+    if (
+      userSearchByEmail &&
+      await this.loginPasswordEquals(userSearchByEmail, password)
+    ) {
+      return this.buildUserAuthData(new UserDto(userSearchByEmail));
+    }
+
+    const userSearchByPhone = await this.searchUser({phone: login});
+
+    if (
+      userSearchByPhone &&
+      await this.loginPasswordEquals(userSearchByPhone, password)
+    ) {
+      return this.buildUserAuthData(new UserDto(userSearchByPhone));
+    }
+
+    if (!userSearchByEmail && !userSearchByPhone) {
+      throw new ValidationException(`USER_NOT_FOUND`);
+    } else {
+      throw new ValidationException(`BAD_PASSWORD`)
+    }
+  }
+
+  private async buildUserAuthData(user: UserDto) {
+    const tokens = this.tokenService.generateTokens({...user});
+    await this.tokenService.saveToken(user.id, tokens);
+    return {
+      ...user,
+      ...tokens
+    }
+  }
+
+  private async loginPasswordEquals(user: User, password: string): Promise<boolean> {
+    const result = await bcrypt.compare(password, user.password);
+    return result;
+  }
+
+  private async searchUser(searchParam: Partial<CreateUserDto>): Promise<User | null> {
+    const user = await this.userModel.findOne(searchParam);
+    return user ? user : null
   }
 
   async logout(): Promise<User> {
@@ -83,7 +117,7 @@ export class UserService {
       activatedCandidate.isActivated = true;
       activatedCandidate.activationLink = null;
     } else {
-      throw new Error('Некорректная ссылка активации')
+      throw new Error('INCORRECT_LINK')
     }
     return await activatedCandidate.save();
   }

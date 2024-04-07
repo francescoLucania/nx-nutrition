@@ -13,6 +13,8 @@ import { UserService } from './user.service';
 import { UserLoginDto } from './dto/user-login.dto';
 import { ObjectId } from 'mongoose';
 import { ValidationPipe } from '../pipes/validation/validation';
+import { User } from './schemas/user.schema';
+import { UserDto } from './dto/user-public.dto';
 
 
 @Controller('/user')
@@ -26,19 +28,18 @@ export class UserController {
   // @UseInterceptors(FileFieldsInterceptor([
   //   { name: 'avatar', maxCount: 1 },
   // ]))
-  async create(
+  public async create(
     // @UploadedFiles() avatar,
     @Body() dto: CreateUserDto,
-    @Response() res,
+    @Response() response,
   ) {
     console.log('controller dto', dto);
     // const picture = avatar?.avatar[0];
-    const userData = await this.userService.create({
+    const user = await this.userService.create({
       ...dto,
     });
-    res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 100, httpOnly: true})
-
-    return res.send(userData);
+    // response.cookie('refreshToken', user.refreshToken, {maxAge: 30 * 24 * 60 * 100, httpOnly: true})
+    return this.setRefreshTokenToken(response, user).send(user);
   }
 
   @UsePipes(ValidationPipe)
@@ -46,7 +47,7 @@ export class UserController {
   @UseInterceptors(FileFieldsInterceptor([
     { name: 'avatar', maxCount: 1 },
   ]))
-  async uploadAvatar(
+  public async uploadAvatar(
     @UploadedFiles() avatar,
     @Response() res,
   ) {
@@ -56,11 +57,10 @@ export class UserController {
   }
 
   @Get('/activate')
-  async activate(
+  public async activate(
     @Query() query: {id: string},
     @Response() res,
   ) {
-    console.log('link', query.id)
     try {
       const user = await this.userService.activate(query.id);
       return res.send({
@@ -82,22 +82,35 @@ export class UserController {
   }
 
   @Get('/deleteAllUsers')
-  deleteAllUsers() {
+  public deleteAllUsers() {
     return this.userService.deleteAllUsers();
   }
 
+  @UsePipes(ValidationPipe)
   @Post('/login')
-  login(@Body() dto: UserLoginDto) {
-    return this.userService.login(dto);
+  public async login(
+    @Body() body: UserLoginDto,
+    @Response() response: {action: 'DONE' | 'WRONG_PASSWORD',}
+    ) {
+    const { login, password } = body;
+    const user = await this.userService.login(login, password);
+
+    this.setRefreshTokenToken(response, user).send({
+      action: user ? 'DONE' : 'WRONG_PASSWORD'
+    })
   }
 
   @Get('/logout')
-  logout(@Param('id') id: ObjectId) {
+  public logout(@Param('id') id: ObjectId) {
     return this.userService.logout();
   }
 
   @Get('/refresh')
-  refresh(@Param('id') id: ObjectId) {
+  public refresh(@Param('id') id: ObjectId) {
     return this.userService.logout();
+  }
+
+  private setRefreshTokenToken(response: any, user: UserDto): any {
+    return response.cookie('refreshToken', user.refreshToken, {maxAge: 30 * 24 * 60 * 100, httpOnly: true});
   }
 }

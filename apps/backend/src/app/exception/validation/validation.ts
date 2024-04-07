@@ -7,6 +7,5 @@ export default class ValidationException extends HttpException {
   constructor(response) {
     super(response, HttpStatusCode.BadRequest);
     this.messages = response;
-    console.log('this.messages', this.messages);
   }
 }

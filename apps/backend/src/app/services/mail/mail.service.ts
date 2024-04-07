@@ -25,7 +25,7 @@ export class MailService {
   sendActivationMail(to, link) {
     console.log('to', to)
     console.log('link', link)
-    // todo для тестирования валидации закоментил
+    // todo тестируем постманом
     // this.transporter.sendMail({
     //   to,
     //   from: this.configService.get('SMTP_USER'),

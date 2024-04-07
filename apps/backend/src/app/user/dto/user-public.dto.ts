@@ -1,12 +1,14 @@
-import mongoose, { Model } from 'mongoose';
-import { UserDocument } from '../schemas/user.schema';
+import mongoose from 'mongoose';
+import { User, UserDocument } from '../schemas/user.schema';
 
 export class UserDto {
   email: string;
   id: mongoose.Types.ObjectId;
   isActivated: boolean;
+  refreshToken: string;
+  accessToken: string;
 
-  constructor(model: UserDocument) {
+  constructor(model: User) {
     this.email = model.email;
     this.id = model._id;
     this.isActivated = model.isActivated;

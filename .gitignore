@@ -43,4 +43,3 @@ Thumbs.db
 
 # backend
 apps/backend/.env
-apps/backend/env/.env.prod
