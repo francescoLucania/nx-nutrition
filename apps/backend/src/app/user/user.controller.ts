@@ -5,16 +5,16 @@ import {
   Get,
   Param,
   Post,
-  HttpException, HttpStatus, Query, UsePipes, UseInterceptors, UploadedFiles
+  HttpException, HttpStatus, Query, UsePipes, UseInterceptors, UploadedFiles, Req, UseGuards
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
 import { UserLoginDto } from './dto/user-login.dto';
-import { ObjectId } from 'mongoose';
 import { ValidationPipe } from '../pipes/validation/validation';
-import { User } from './schemas/user.schema';
 import { UserDto } from './dto/user-public.dto';
+import { AuthGuard } from '../guards/auth/auth';
+// import { AuthGuard } from '../guards/auth/auth';
 
 
 @Controller('/user')
@@ -38,7 +38,6 @@ export class UserController {
     const user = await this.userService.create({
       ...dto,
     });
-    // response.cookie('refreshToken', user.refreshToken, {maxAge: 30 * 24 * 60 * 100, httpOnly: true})
     return this.setRefreshTokenToken(response, user).send(user);
   }
 
@@ -81,36 +80,54 @@ export class UserController {
     }
   }
 
-  @Get('/deleteAllUsers')
-  public deleteAllUsers() {
-    return this.userService.deleteAllUsers();
-  }
-
   @UsePipes(ValidationPipe)
   @Post('/login')
   public async login(
     @Body() body: UserLoginDto,
-    @Response() response: {action: 'DONE' | 'WRONG_PASSWORD',}
+    @Response() response: UserDto
     ) {
     const { login, password } = body;
     const user = await this.userService.login(login, password);
 
-    this.setRefreshTokenToken(response, user).send({
-      action: user ? 'DONE' : 'WRONG_PASSWORD'
-    })
+    this.setRefreshTokenToken(response, user).send(user);
   }
 
   @Get('/logout')
-  public logout(@Param('id') id: ObjectId) {
-    return this.userService.logout();
+  public async logout(
+    @Req() request,
+    @Response() response,
+    ) {
+    await this.userService.logout(request.cookies.refreshToken);
+    response.clearCookie('refreshToken')
+    return response.send({action: 'LOGOUT'});
   }
 
   @Get('/refresh')
-  public refresh(@Param('id') id: ObjectId) {
-    return this.userService.logout();
+  public async refresh(
+    @Req() request,
+    @Response() response,
+    ) {
+    const user = await this.userService.refresh(request.cookies.refreshToken)
+    this.setRefreshTokenToken(response, user).send(user);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('/getUserData')
+  public getUserData(
+    @Req() request,
+    @Response() response,
+  ) {
+    return response.send({
+      action: 'TEST'
+    })
   }
 
   private setRefreshTokenToken(response: any, user: UserDto): any {
     return response.cookie('refreshToken', user.refreshToken, {maxAge: 30 * 24 * 60 * 100, httpOnly: true});
+  }
+
+  @Get('/deleteAllUsers')
+  public deleteAllUsers() {
+    return this.userService.deleteAllUsers();
   }
 }

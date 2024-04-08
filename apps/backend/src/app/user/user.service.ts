@@ -6,11 +6,12 @@ import { FileService, FileType } from './file/file.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { MailService } from '../services/mail/mail.service';
 import bcrypt from 'bcryptjs';
-import { TokenService } from './services/token/token.service';
+import { TokenService, TokenType } from './services/token/token.service';
 import { UserDto } from './dto/user-public.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
 import ValidationException from '../exception/validation/validation';
+import UnauthorizedException from '../exception/unauthorized/unauthorized';
 
 @Injectable()
 export class UserService {
@@ -25,8 +26,8 @@ export class UserService {
   }
 
   async create(dto: CreateUserDto): Promise<UserDto> {
-    const searchByEmail = await this.searchUser({email: dto.email});
-    const searchByPhone = await this.searchUser({email: dto.email});
+    const searchByEmail = await this.searchUserInModel({email: dto.email});
+    const searchByPhone = await this.searchUserInModel({phone: dto.phone});
     const user = searchByEmail || searchByPhone;
     if (!user) {
       let picturePath;
@@ -63,7 +64,7 @@ export class UserService {
   }
 
   async login(login: string, password: string): Promise<UserDto> {
-    const userSearchByEmail = await this.searchUser({email: login});
+    const userSearchByEmail = await this.searchUserInModel({email: login});
 
     if (
       userSearchByEmail &&
@@ -72,7 +73,7 @@ export class UserService {
       return this.buildUserAuthData(new UserDto(userSearchByEmail));
     }
 
-    const userSearchByPhone = await this.searchUser({phone: login});
+    const userSearchByPhone = await this.searchUserInModel({phone: login});
 
     if (
       userSearchByPhone &&
@@ -102,13 +103,16 @@ export class UserService {
     return result;
   }
 
-  private async searchUser(searchParam: Partial<CreateUserDto>): Promise<User | null> {
-    const user = await this.userModel.findOne(searchParam);
-    return user ? user : null
+  async logout(refreshToken: string): Promise<null> {
+    return await this.tokenService.removeToken(refreshToken);
   }
 
-  async logout(): Promise<User> {
-    return await this.userModel.create({});
+  async refresh(refreshToken: string): Promise<UserDto> {
+    if (refreshToken) {
+      return this.getUserByToken('REFRESH_TOKEN', refreshToken)
+    }
+
+    throw new UnauthorizedException('BAD_TOKEN')
   }
 
   async activate(link: string): Promise<User> {
@@ -120,6 +124,27 @@ export class UserService {
       throw new Error('INCORRECT_LINK')
     }
     return await activatedCandidate.save();
+  }
+
+  public checkAuthState(refreshToken: string) {
+    const userData = this.getUserByToken('REFRESH_TOKEN', refreshToken);
+    return !!userData;
+  }
+
+  private async searchUserInModel(searchParam: Partial<CreateUserDto>): Promise<User | null> {
+    const user = await this.userModel.findOne(searchParam);
+    return user ? user : null
+  }
+
+
+  private async getUserByToken(tokenType: TokenType, token: string): Promise<UserDto> {
+    const validToken = this.tokenService.validateToken(tokenType, token);
+    const tokenFromDb = await this.tokenService.findToken(token);
+    const user = await this.userModel.findById(tokenFromDb.user.id)
+    if (validToken && user) {
+      return this.buildUserAuthData(new UserDto(user));
+    }
+    return null;
   }
 
   async deleteAllUsers(): Promise<null> {
