@@ -109,7 +109,7 @@ export class UserService {
 
   async refresh(refreshToken: string): Promise<UserDto> {
     if (refreshToken) {
-      return this.getUserByToken('REFRESH_TOKEN', refreshToken)
+      return this.getUserByToken(refreshToken)
     }
 
     throw new UnauthorizedException('BAD_TOKEN')
@@ -126,23 +126,18 @@ export class UserService {
     return await activatedCandidate.save();
   }
 
-  public checkAuthState(refreshToken: string) {
-    const userData = this.getUserByToken('REFRESH_TOKEN', refreshToken);
-    return !!userData;
-  }
-
   private async searchUserInModel(searchParam: Partial<CreateUserDto>): Promise<User | null> {
     const user = await this.userModel.findOne(searchParam);
     return user ? user : null
   }
 
 
-  private async getUserByToken(tokenType: TokenType, token: string): Promise<UserDto> {
-    const validToken = this.tokenService.validateToken(tokenType, token);
-    const tokenFromDb = await this.tokenService.findToken(token);
-    const user = await this.userModel.findById(tokenFromDb.user.id)
-    if (validToken && user) {
-      return this.buildUserAuthData(new UserDto(user));
+  private async getUserByToken(token: string): Promise<UserDto> {
+    const validToken = this.tokenService.validateToken('ACCESS_TOKEN', token);
+    if (validToken) {
+      const tokenFromDb = await this.tokenService.findToken(token);
+      const user = await this.userModel.findById(tokenFromDb?.user?.id);
+      return user ? this.buildUserAuthData(new UserDto(user)) : null;
     }
     return null;
   }

@@ -37,8 +37,8 @@ export class TokenService {
   }
 
   async findToken(refreshToken: string): Promise<TokenDocument | null> {
-    const token = await this.tokenModel.findOne({refreshToken});
-    return token ? token : null;
+    const result = await this.tokenModel.findOne({refreshToken});
+    return result ? result : null;
   }
 
   async removeAll(): Promise<null> {
@@ -49,8 +49,12 @@ export class TokenService {
   }
 
   validateToken(type: TokenType, token: string): TokenDocument {
-    console.log('validateToken', token);
-    const jwtSecret = type === 'ACCESS_TOKEN' ? 'JWT_ACCESS_SECRET' : 'JWT_REFRESH_SECRET'
-    return jwt.verify(token, this.configService.get(jwtSecret))
+    try {
+      const jwtSecret = type === 'ACCESS_TOKEN' ? 'JWT_ACCESS_SECRET' : 'JWT_REFRESH_SECRET'
+      return jwt.verify(token, this.configService.get(jwtSecret))
+    } catch (e) {
+      console.log(e);
+      return null
+    }
   }
 }

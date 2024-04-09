@@ -1,30 +1,23 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { UserService } from '../../user/user.service';
 import UnauthorizedException from '../../exception/unauthorized/unauthorized';
+import { TokenService } from '../../user/services/token/token.service';
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
-    private userService: UserService,
+    private tokenService: TokenService,
   ) {
   }
   canActivate(
     context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
-
-    console.log('context', context.switchToHttp())
-
+  ): boolean {
     const response = context.switchToHttp().getRequest();
-    const token = response?.cookies.refreshToken;
-    console.log('response?.cookies', response?.cookies)
-
+    const token = response?.headers['authorization']?.split(' ')?.[1];
     if (
       token &&
-      this.userService.checkAuthState(token)
+      this.tokenService.validateToken('ACCESS_TOKEN', token)
     ) {
       return true;
     }
-
-    throw new UnauthorizedException('BAD_TOKEN')
+    throw new UnauthorizedException(token ? 'NOT_VALID_TOKEN' : 'TOKEN_MISSING')
   }
 }
