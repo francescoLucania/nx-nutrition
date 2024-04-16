@@ -108,8 +108,9 @@ export class UserService {
   }
 
   async refresh(refreshToken: string): Promise<UserDto> {
+    // console.log('refreshToken', refreshToken);
     if (refreshToken) {
-      return this.getUserByToken(refreshToken)
+      return this.getUserByToken('REFRESH_TOKEN', refreshToken)
     }
 
     throw new UnauthorizedException('BAD_TOKEN')
@@ -132,11 +133,13 @@ export class UserService {
   }
 
 
-  private async getUserByToken(token: string): Promise<UserDto> {
-    const validToken = this.tokenService.validateToken('ACCESS_TOKEN', token);
+  private async getUserByToken(type: TokenType, token: string): Promise<UserDto> {
+    const validToken = this.tokenService.validateToken(type, token);
     if (validToken) {
+      console.log('validToken true', validToken)
       const tokenFromDb = await this.tokenService.findToken(token);
-      const user = await this.userModel.findById(tokenFromDb?.user?.id);
+      const user = await this.userModel.findById(tokenFromDb?.user);
+      console.log('user', user);
       return user ? this.buildUserAuthData(new UserDto(user)) : null;
     }
     return null;

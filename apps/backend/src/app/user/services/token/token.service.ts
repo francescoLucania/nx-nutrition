@@ -22,13 +22,18 @@ export class TokenService {
       refreshToken,
     }
   }
-  public async saveToken(userId, refreshToken) {
+  public async saveToken(userId, tokens) {
     const tokenData = await this.tokenModel.findOne({user: userId})
+
+    console.log('tokens', tokens)
+
     if (tokenData) {
-      tokenData.refreshToken = refreshToken;
+      console.log('update token tokenData', tokenData)
+      tokenData.refreshToken = tokens.refreshToken;
+      // console.log('tokens.refreshToken', tokens.refreshToken)
       return tokenData.save();
     }
-    return await this.tokenModel.create({ user: userId, refreshToken });
+    return await this.tokenModel.create({ user: userId, refreshToken: tokens.refreshToken });
   }
 
   async removeToken(refreshToken: string) {
@@ -37,7 +42,9 @@ export class TokenService {
   }
 
   async findToken(refreshToken: string): Promise<TokenDocument | null> {
+    console.log('findToken refreshToken', refreshToken);
     const result = await this.tokenModel.findOne({refreshToken});
+    console.log('result', result);
     return result ? result : null;
   }
 

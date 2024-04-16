@@ -1,0 +1,29 @@
+<div class="container">
+  <form *ngIf="form"
+        (ngSubmit)="auth()"
+        [formGroup]="form" style="margin: 0 auto; max-width: 480px"
+  >
+    <div>
+      <neo-ui-input [formControlName]="'login'" [placeholder]="'Логин'">
+
+      </neo-ui-input>
+    </div>
+
+    <div class="mt-24">
+      <neo-ui-input [formControlName]="'password'" [placeholder]="'Пароль'">
+
+      </neo-ui-input>
+    </div>
+    <div class="mt-24">
+      <neo-ui-button [buttonType]="'submit'">
+        Войти
+      </neo-ui-button>
+    </div>
+    <div class="mt-64">
+      <neo-ui-button (click)="getUserData()">
+        Мой профиль
+      </neo-ui-button>
+    </div>
+  </form>
+</div>
+
