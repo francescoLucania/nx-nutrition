@@ -1,0 +1,34 @@
+<header class="main-header">
+  <div class="container">
+    <div class="main-header__navigate-grid">
+      <a href="/" class="main-header__navigate-logotype">
+        Logotype
+      </a>
+
+      <nav class="main-header__navigate-menu">
+        <neo-ui-navigate-list
+          [type]="'horizontal'"
+          [navigate]="mainMenu"
+        ></neo-ui-navigate-list>
+      </nav>
+
+      (auth$ | async) : {{(auth$ | async)}}
+
+      <div *ngIf="(auth$ | async) !== undefined" class="main-header__user-menu">
+        <ng-container *ngIf="(auth$ | async) === true; else loginIn">
+          <neo-ui-button>
+            Личный кабинет
+          </neo-ui-button>
+        </ng-container>
+
+        <ng-template #loginIn>
+          <neo-ui-button (click)="login()">
+            Войти
+          </neo-ui-button>
+        </ng-template>
+      </div>
+
+
+    </div>
+  </div>
+</header>

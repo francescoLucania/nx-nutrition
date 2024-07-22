@@ -9,3 +9,18 @@
 :root {
   --baseFont: #{'SF Pro Display', Arial, Helvetica, sans-serif};
 }
+
+.text-center {
+  text-align: center;
+}
+
+.text-error {
+  color: var(--colorError);
+}
+
+:root {
+  --inputPaddingTopLarge: #{14px};
+  --inputPaddingBottomLarge: #{14px};
+  --inputPaddingLeftLarge: #{12px};
+  --inputPaddingRightLarge: #{12px};
+}

@@ -22,36 +22,6 @@ type LoginForm = {
   styleUrl: './home.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HomeComponent implements OnInit {
-  public form: FormGroup | undefined;
+export class HomeComponent {
 
-  constructor(private userService: UserService,) {
-  }
-
-  public ngOnInit() {
-    this.form = new FormGroup<LoginForm>(    {
-      login: new FormControl(),
-      password: new FormControl()
-    })
-  }
-
-  public auth() {
-    const body = {
-      login: this.form?.controls['login'].value,
-      password: this.form?.controls['password'].value
-    }
-    this.userService.auth(body).subscribe(
-      {next: (data: any) => {
-        console.log('auth data')
-        }}
-    )
-  }
-
-  public getUserData() {
-    return this.userService.getUserData().subscribe(
-      {next: (data: any) => {
-          console.log('getUserData data')
-        }}
-    )
-  }
 }

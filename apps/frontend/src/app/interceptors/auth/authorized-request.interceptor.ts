@@ -13,14 +13,12 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           !req.url.includes('user/login') &&
           error.status === 401
         ) {
-          console.log('error!!!!!!!!!!', error)
           return userService.refreshToken().pipe(
             switchMap(() => {
               return next(userService.buildRequest(req));
             }),
           );
         }
-
         return throwError(() => error);
       }),
       tap((response: any) => {

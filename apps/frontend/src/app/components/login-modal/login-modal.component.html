@@ -1,0 +1,50 @@
+<h3 class="heading-h3 mb-24 text-center">
+  Войти
+</h3>
+
+<form *ngIf="form"
+      (ngSubmit)="auth()"
+      [formGroup]="form" style="margin: 0 auto; max-width: 480px"
+>
+  <div>
+    <div class="mb-4 text-error"
+         *ngIf="!login?.pristine && login?.errors!['error']"
+    >
+      {{login?.errors!['error']}}
+    </div>
+    <neo-ui-input
+      [size]="'large'"
+      [formControlName]="'login'"
+      [placeholder]="'Логин'"
+      [autocomplete]="true"
+    >
+
+    </neo-ui-input>
+  </div>
+
+  <div class="mt-24">
+    <neo-ui-input
+      [type]="'password'"
+      [size]="'large'"
+      [formControlName]="'password'"
+      [placeholder]="'Пароль'"
+      [autocomplete]="true"
+    >
+
+    </neo-ui-input>
+  </div>
+  <div class="mt-24">
+    <neo-ui-button
+      [size]="'large'"
+      [buttonType]="'submit'"
+      [fullWidth]="true"
+    >
+      Войти
+    </neo-ui-button>
+  </div>
+  <div class="mt-64">
+    <neo-ui-button (click)="getUserData()">
+      Мой профиль
+    </neo-ui-button>
+  </div>
+</form>

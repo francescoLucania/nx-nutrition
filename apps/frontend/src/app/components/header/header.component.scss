@@ -1,0 +1,48 @@
+@use 'ngx-neo-ui/assets/styles/theme-provider/theme_provider' as theme;
+
+.main-header {
+  padding: 24px 0;
+
+  @include theme.mq(md) {
+    padding: 32px 0;
+  }
+
+  &__navigate-grid {
+    display: flex;
+    align-items: center;
+  }
+
+  &__navigate-menu {
+    display: none;
+
+    @include theme.mq(md) {
+      display: block;
+    }
+  }
+
+  &__navigate-logotype {
+    display: block;
+    font-size: 24px;
+    line-height: 1;
+    text-transform: uppercase;
+    color: var(--colorBrand);
+
+    &:hover {
+       color: var(--colorBrand);
+    }
+
+    @include theme.mq(md) {
+      font-size: 32px;
+      line-height: 1;
+    }
+  }
+
+  &__navigate-menu {
+    margin-left: 64px;
+    color: var(--colorBrand);
+  }
+
+  &__user-menu {
+    margin-left: auto;
+  }
+}
