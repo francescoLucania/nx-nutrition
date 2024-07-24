@@ -1,1 +1,5 @@
-<p>profile works!</p>
+<div class="container">
+  <div *ngIf="this.userData$">
+    {{this.userData$ | async | json}}
+  </div>
+</div>

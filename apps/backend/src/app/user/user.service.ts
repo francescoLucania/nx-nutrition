@@ -89,6 +89,10 @@ export class UserService {
     }
   }
 
+  public async getUserData(token: string) {
+    return await this.getUserByToken('ACCESS_TOKEN', token);
+  }
+
   private async buildUserAuthData(user: UserDto) {
     const tokens = this.tokenService.generateTokens({...user});
     await this.tokenService.saveToken(user.id, tokens);
@@ -108,11 +112,10 @@ export class UserService {
   }
 
   async refresh(refreshToken: string): Promise<UserDto> {
-    // console.log('refreshToken', refreshToken);
     if (refreshToken) {
-      return this.getUserByToken('REFRESH_TOKEN', refreshToken)
+      const user = await this.getUserByToken('REFRESH_TOKEN', refreshToken);
+      return user ? this.buildUserAuthData(new UserDto(user)) : null;
     }
-
     throw new UnauthorizedException('BAD_TOKEN')
   }
 
@@ -133,14 +136,19 @@ export class UserService {
   }
 
 
-  private async getUserByToken(type: TokenType, token: string): Promise<UserDto> {
+  private async getUserByToken(type: TokenType, token: string): Promise<UserDocument> {
     const validToken = this.tokenService.validateToken(type, token);
     if (validToken) {
-      console.log('validToken true', validToken)
-      const tokenFromDb = await this.tokenService.findToken(token);
-      const user = await this.userModel.findById(tokenFromDb?.user);
-      console.log('user', user);
-      return user ? this.buildUserAuthData(new UserDto(user)) : null;
+      if (type === 'REFRESH_TOKEN') {
+        const tokenFromDb = await this.tokenService.findToken(token);
+        if (!tokenFromDb) {
+          return null;
+        }
+      }
+
+      const user = await this.userModel.findById(validToken.id);
+
+      return user ? user : null;
     }
     return null;
   }

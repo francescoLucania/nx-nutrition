@@ -13,7 +13,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           !req.url.includes('user/login') &&
           error.status === 401
         ) {
-          return userService.refreshToken().pipe(
+          return userService.refreshToken$().pipe(
             switchMap(() => {
               return next(userService.buildRequest(req));
             }),
@@ -27,7 +27,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           console.log('set accessToken', accessToken)
           userService.setAccessToken = accessToken;
         }
-        console.log('response', response)
       })
     );
 };

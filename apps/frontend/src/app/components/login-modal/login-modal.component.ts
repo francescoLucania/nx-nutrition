@@ -61,30 +61,22 @@ export class LoginModalComponent implements OnInit {
       login: this.form?.controls['login'].value,
       password: this.form?.controls['password'].value
     }
-    this.userService.auth(body)
+    this.userService.auth$(body)
       .pipe(
         finalize(() => this.cdr.detectChanges()),
         takeUntil(this.destroy$),
       )
       .subscribe(
       {
-        next: (data: any) => this.modalService.close(),
+        next: () => this.modalService.close(),
         error: (error: HttpErrorResponse) => {
-          if (error.error.message === 'USER_NOT_FOUND') {
+          if (error.error.message === 'USER_NOT_FOUND' || error.error.message === 'BAD_PASSWORD') {
             this.form?.controls['login'].setErrors({
               error: 'Неправильный логин или пароль'
             })
           }
         }
       }
-    )
-  }
-
-  public getUserData() {
-    return this.userService.getUserData().subscribe(
-      {next: (data: any) => {
-          console.log('getUserData data')
-        }}
     )
   }
 }

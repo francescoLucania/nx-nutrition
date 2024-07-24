@@ -9,6 +9,7 @@ export const userProfileGuard: CanActivateFn = (route, state) => {
   const modalService: ModalService = inject(ModalService);
 
   if (userService.isLoggedIn) {
+    console.log('userService.isLoggedIn', userService.isLoggedIn);
     return true;
   } else {
     modalService.open(LoginModalComponent);

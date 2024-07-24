@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, EMPTY, Observable, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, EMPTY, Observable, shareReplay, tap, throwError } from 'rxjs';
 import { HttpErrorResponse, HttpRequest } from '@angular/common/http';
 import { ApiService } from '../api/api.service';
 import * as colorette from 'colorette';
+import { UserAuthState } from '../../models/user/user.modal';
 
 @Injectable({
   providedIn: 'root'
@@ -10,14 +11,16 @@ import * as colorette from 'colorette';
 export class UserService {
 
   private accessToken: string | undefined;
-  private _isLoggedIn$: BehaviorSubject<boolean | undefined> = new BehaviorSubject<boolean | undefined>(undefined);
+  private _isLoggedIn$: BehaviorSubject<UserAuthState> = new BehaviorSubject<UserAuthState>('processing');
   private isRefreshing = false;
+
+  private _userProfileData$: Observable<any> | undefined;
 
   public set setAccessToken(value: string) {
     this.accessToken = value;
   }
 
-  public get isLoggedIn(): boolean | undefined {
+  public get isLoggedIn(): UserAuthState {
     return this._isLoggedIn$.getValue();
   }
 
@@ -44,34 +47,41 @@ export class UserService {
     return req;
   }
 
-  public refreshToken(): Observable<any> {
+  public refreshToken$(): Observable<any> {
 
     if (!this.isRefreshing) {
       this.isRefreshing = true;
     } else {
       this.isRefreshing = false;
-      this._isLoggedIn$.next(false);
+      this._isLoggedIn$.next('not');
       return EMPTY;
     }
 
+    this._isLoggedIn$.next('processing');
     return this.apiService.getRequest('user/refresh')
       .pipe(
-        tap((response) => {
-          this._isLoggedIn$.next(Boolean(response?.accessToken));
+        tap(() => {
+          this._isLoggedIn$.next('done');
         }),
       );
   }
 
-  public auth<Body>(body: Body): Observable<any> {
+  public auth$<Body>(body: Body): Observable<any> {
     return this.apiService.postRequest('user/login', body)
       .pipe(
         tap((response) => {
-          this._isLoggedIn$.next(Boolean(response?.accessToken));
+          this._isLoggedIn$.next('done');
         }),
       );
   }
 
-  public getUserData(): Observable<any> {
-    return this.apiService.getRequest('user/getUserData');
+  public getUserProfileData$(force = false): Observable<any> {
+    if (force || !this._userProfileData$) {
+      this._userProfileData$ = this.apiService.getRequest('user/getUserData').pipe(
+        shareReplay(1),
+      );
+    }
+
+    return this._userProfileData$ ? this._userProfileData$ : EMPTY;
   }
 }

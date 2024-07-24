@@ -1,7 +1,12 @@
 import mongoose from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-export type TokenDocument = Token & Document;
+export type TokenDocument = Token & Document & {  email: string,
+  id: string,
+  isActivated: boolean,
+  iat: number,
+  exp: number
+};
 
 @Schema()
 export class Token {

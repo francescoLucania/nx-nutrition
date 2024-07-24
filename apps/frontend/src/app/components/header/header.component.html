@@ -12,22 +12,27 @@
         ></neo-ui-navigate-list>
       </nav>
 
-      (auth$ | async) : {{(auth$ | async)}}
 
-      <div *ngIf="(auth$ | async) !== undefined" class="main-header__user-menu">
-        <ng-container *ngIf="(auth$ | async) === true; else loginIn">
-          <neo-ui-button>
-            Личный кабинет
-          </neo-ui-button>
+      <ng-container *ngIf="(isLoggedIn$ | async) as isLoggedIn">
+        isLoggedIn !== 'processing': {{isLoggedIn !== 'processing'}}
+        <ng-container *ngIf="isLoggedIn !== 'processing'">
+          <div class="main-header__user-menu">
+
+            <ng-container *ngIf="isLoggedIn === 'done'; else not">
+              <neo-ui-button [link]="'profile'">
+                Личный кабинет
+              </neo-ui-button>
+            </ng-container>
+
+            <ng-template #not>
+              <neo-ui-button [link]="'profile'">
+                Войти
+              </neo-ui-button>
+            </ng-template>
+
+          </div>
         </ng-container>
-
-        <ng-template #loginIn>
-          <neo-ui-button (click)="login()">
-            Войти
-          </neo-ui-button>
-        </ng-template>
-      </div>
-
+      </ng-container>
 
     </div>
   </div>

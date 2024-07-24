@@ -7,7 +7,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { UserService } from './services';
 
 export function initializerFactory(userService: UserService) {
-  return () => userService.getUserData().subscribe();
+  return () => userService.getUserProfileData$().subscribe();
 }
 
 

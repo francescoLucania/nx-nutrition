@@ -113,13 +113,16 @@ export class UserController {
 
   @UseGuards(AuthGuard)
   @Get('/getUserData')
-  public getUserData(
+  public async  getUserData(
     @Req() request,
     @Response() response,
   ) {
-    return response.send({
-      action: 'TEST'
-    })
+    console.log('getUserData response', request.headers)
+    const token = request?.headers['authorization']?.split(' ')?.[1];
+    console.log('token', token);
+    const userData = await this.userService.getUserData(token);
+    console.log('userData', userData);
+    response.send(userData);
   }
 
   private setRefreshTokenToken(response: any, user: UserDto): any {

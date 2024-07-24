@@ -4,6 +4,8 @@ import { INavigateList } from 'ngx-neo-ui/lib/components/navigate-list/models/na
 import { UserService } from '../../services';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { LoginModalComponent } from '../login-modal/login-modal.component';
+import { RouterLink } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'nutrition-header',
@@ -12,7 +14,8 @@ import { LoginModalComponent } from '../login-modal/login-modal.component';
     NavigateListComponent,
     ButtonStandaloneComponent,
     NgIf,
-    AsyncPipe
+    AsyncPipe,
+    RouterLink
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
@@ -20,7 +23,6 @@ import { LoginModalComponent } from '../login-modal/login-modal.component';
 })
 export class HeaderComponent {
   public mainMenu: INavigateList[] = [
-
     {
       name: 'Услуги',
       uri: 'services',
@@ -47,7 +49,8 @@ export class HeaderComponent {
     },
 
   ]
-  public auth$ = this.userService.isLoggedIn$;
+  public isLoggedIn$ = this.userService.isLoggedIn$;
+
 
   constructor(
     private userService: UserService,

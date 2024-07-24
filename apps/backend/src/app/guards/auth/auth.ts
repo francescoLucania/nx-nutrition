@@ -16,6 +16,7 @@ export class AuthGuard implements CanActivate {
       token &&
       this.tokenService.validateToken('ACCESS_TOKEN', token)
     ) {
+
       return true;
     }
     throw new UnauthorizedException(token ? 'NOT_VALID_TOKEN' : 'TOKEN_MISSING')
