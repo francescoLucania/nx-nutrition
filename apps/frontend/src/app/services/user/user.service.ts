@@ -48,12 +48,12 @@ export class UserService {
   }
 
   public refreshToken$(): Observable<any> {
-
+    console.log('refresh')
     if (!this.isRefreshing) {
       this.isRefreshing = true;
+      this._isLoggedIn$.next('processing');
     } else {
       this.isRefreshing = false;
-      this._isLoggedIn$.next('not');
       return EMPTY;
     }
 
@@ -77,6 +77,7 @@ export class UserService {
 
   public getUserProfileData$(force = false): Observable<any> {
     if (force || !this._userProfileData$) {
+      this._isLoggedIn$.next('processing');
       this._userProfileData$ = this.apiService.getRequest('user/getUserData').pipe(
         shareReplay(1),
       );

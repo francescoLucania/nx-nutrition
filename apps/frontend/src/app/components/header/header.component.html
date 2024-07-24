@@ -14,8 +14,8 @@
 
 
       <ng-container *ngIf="(isLoggedIn$ | async) as isLoggedIn">
-        isLoggedIn !== 'processing': {{isLoggedIn !== 'processing'}}
         <ng-container *ngIf="isLoggedIn !== 'processing'">
+
           <div class="main-header__user-menu">
 
             <ng-container *ngIf="isLoggedIn === 'done'; else not">
