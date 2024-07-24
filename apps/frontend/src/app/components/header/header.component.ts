@@ -6,6 +6,8 @@ import { AsyncPipe, NgIf } from '@angular/common';
 import { LoginModalComponent } from '../login-modal/login-modal.component';
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { Observable } from 'rxjs';
+import { UserAuthState } from '../../models/user/user.modal';
 
 @Component({
   selector: 'nutrition-header',
@@ -50,6 +52,13 @@ export class HeaderComponent {
 
   ]
   public isLoggedIn$ = this.userService.isLoggedIn$;
+
+  public isLoggedIn = toSignal(
+    this.isLoggedIn$,
+    { manualCleanup: true,
+      requireSync: true }
+  );
+
 
 
   constructor(
