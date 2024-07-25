@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, EMPTY, Observable, shareReplay, tap, throwError } from 'rxjs';
-import { HttpErrorResponse, HttpRequest } from '@angular/common/http';
+import { BehaviorSubject, EMPTY, Observable, shareReplay, tap, } from 'rxjs';
+import { HttpRequest } from '@angular/common/http';
 import { ApiService } from '../api/api.service';
-import * as colorette from 'colorette';
 import { UserAuthState } from '../../models/user/user.modal';
+import { BrowserService } from 'ngx-neo-ui';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +20,12 @@ export class UserService {
     this.accessToken = value;
   }
 
+  private set updateIsLoggedIn(value: UserAuthState) {
+    setTimeout(() => {
+      this._isLoggedIn$.next(value);
+    }, 1000)
+  }
+
   public get isLoggedIn(): UserAuthState {
     return this._isLoggedIn$.getValue();
   }
@@ -31,6 +37,7 @@ export class UserService {
   }
 
   constructor(
+    private browserService: BrowserService,
     private apiService: ApiService,
   ) { }
 
@@ -48,20 +55,20 @@ export class UserService {
   }
 
   public refreshToken$(): Observable<any> {
-    console.log('refresh')
+
     if (!this.isRefreshing) {
+      this.updateIsLoggedIn = 'processing';
       this.isRefreshing = true;
-      this._isLoggedIn$.next('processing');
     } else {
+      this.updateIsLoggedIn = 'not';
       this.isRefreshing = false;
       return EMPTY;
     }
 
-    this._isLoggedIn$.next('processing');
     return this.apiService.getRequest('user/refresh')
       .pipe(
         tap(() => {
-          this._isLoggedIn$.next('done');
+          this.updateIsLoggedIn = 'done';
         }),
       );
   }
@@ -70,14 +77,15 @@ export class UserService {
     return this.apiService.postRequest('user/login', body)
       .pipe(
         tap((response) => {
-          this._isLoggedIn$.next('done');
+          this.updateIsLoggedIn = 'done';
         }),
       );
   }
 
   public getUserProfileData$(force = false): Observable<any> {
+
     if (force || !this._userProfileData$) {
-      this._isLoggedIn$.next('processing');
+      this.updateIsLoggedIn = 'processing';
       this._userProfileData$ = this.apiService.getRequest('user/getUserData').pipe(
         shareReplay(1),
       );

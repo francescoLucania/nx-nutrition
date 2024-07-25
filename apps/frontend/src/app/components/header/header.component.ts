@@ -59,8 +59,6 @@ export class HeaderComponent {
       requireSync: true }
   );
 
-
-
   constructor(
     private userService: UserService,
     private modalService: ModalService,

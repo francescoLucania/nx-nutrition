@@ -1,10 +1,12 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { ButtonStandaloneComponent, DestroyService, InputStandaloneComponent, ModalService } from 'ngx-neo-ui';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { UserService } from '../../services';
 import { HttpErrorResponse } from '@angular/common/http';
 import { finalize, takeUntil } from 'rxjs';
+import { Router } from '@angular/router';
+import { ThrobberComponent } from '../throbber/throbber.component';
 
 class LoginForm {
 }
@@ -17,7 +19,8 @@ class LoginForm {
     FormsModule,
     InputStandaloneComponent,
     NgIf,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ThrobberComponent
   ],
   providers: [DestroyService],
   templateUrl: './login-modal.component.html',
@@ -26,22 +29,47 @@ class LoginForm {
 })
 export class LoginModalComponent implements OnInit {
 
+  @Input() private route: string | undefined;
+
   public get login(): AbstractControl | undefined {
     return this.form?.controls['login']
   }
 
+  public loading = true;
   public form: FormGroup | undefined;
 
   constructor(
     private destroy$: DestroyService,
     private userService: UserService,
     private modalService: ModalService,
+    private router: Router,
     private cdr: ChangeDetectorRef,
     ) {
   }
 
   public ngOnInit() {
-    this.initForm();
+    this.initState();
+  }
+
+  private initState(): void {
+    this.userService.isLoggedIn$
+      .pipe(
+        takeUntil(this.destroy$),
+      )
+      .subscribe((value) => {
+        switch (value) {
+          case 'processing':
+            this.loading = true;
+            break;
+          case 'not':
+            this.initForm();
+            this.loading = false;
+            break;
+          case 'done':
+            this.router.navigate([this.route]);
+            this.modalService.close();
+        }
+      })
   }
 
   private initForm(): void {

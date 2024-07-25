@@ -13,15 +13,13 @@
       </nav>
 
       <div class="main-header__user-menu">
-        @if (isLoggedIn() === 'processing') {
-          Loaded
-        } @else if (isLoggedIn() === 'done') {
+        @if (isLoggedIn() === 'done') {
           <neo-ui-button [link]="'profile'">
             Личный кабинет
           </neo-ui-button>
         } @else {
-          <neo-ui-button [link]="'profile'">
-            Войти
+          <neo-ui-button (click)="login()">
+            Личный кабинет
           </neo-ui-button>
         }
 
