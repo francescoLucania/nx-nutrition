@@ -1,8 +1,14 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { ButtonStandaloneComponent, DestroyService, InputStandaloneComponent, ModalService } from 'ngx-neo-ui';
+import {
+  BrowserService,
+  ButtonStandaloneComponent,
+  DestroyService,
+  InputStandaloneComponent,
+  ModalService
+} from 'ngx-neo-ui';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgIf } from '@angular/common';
-import { UserService } from '../../services';
+import { JsonPipe, NgIf } from '@angular/common';
+import { LoginTypes, UserService, ValidationService } from '../../services';
 import { HttpErrorResponse } from '@angular/common/http';
 import { finalize, takeUntil } from 'rxjs';
 import { Router } from '@angular/router';
@@ -20,12 +26,14 @@ class LoginForm {
     InputStandaloneComponent,
     NgIf,
     ReactiveFormsModule,
-    ThrobberComponent
+    ThrobberComponent,
+    JsonPipe
   ],
   providers: [DestroyService],
   templateUrl: './login-modal.component.html',
   styleUrl: './login-modal.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { ngSkipHydration: "true" },
 })
 export class LoginModalComponent implements OnInit {
 
@@ -34,14 +42,21 @@ export class LoginModalComponent implements OnInit {
   public get login(): AbstractControl | undefined {
     return this.form?.controls['login']
   }
+  public get password(): AbstractControl | undefined {
+    return this.form?.controls['password']
+  }
 
   public loading = true;
+  public isBrowser = false;
   public form: FormGroup | undefined;
+  public userLogin: { idType: string; login: string } | boolean = false;
 
   constructor(
     private destroy$: DestroyService,
+    private browserService: BrowserService,
     private userService: UserService,
     private modalService: ModalService,
+    private validationService: ValidationService,
     private router: Router,
     private cdr: ChangeDetectorRef,
     ) {
@@ -52,6 +67,7 @@ export class LoginModalComponent implements OnInit {
   }
 
   private initState(): void {
+    this.isBrowser = this.browserService.isBrowser;
     this.userService.isLoggedIn$
       .pipe(
         takeUntil(this.destroy$),
@@ -66,9 +82,12 @@ export class LoginModalComponent implements OnInit {
             this.loading = false;
             break;
           case 'done':
+            console.log('this.route', this.route);
             this.router.navigate([this.route]);
             this.modalService.close();
+            break;
         }
+        this.cdr.detectChanges()
       })
   }
 
@@ -85,26 +104,48 @@ export class LoginModalComponent implements OnInit {
   }
 
   public auth() {
-    const body = {
-      login: this.form?.controls['login'].value,
-      password: this.form?.controls['password'].value
-    }
-    this.userService.auth$(body)
-      .pipe(
+    this.userLogin = this.validationService.formatLogin(this.login);
+
+    if (typeof this.userLogin !== 'boolean') {
+
+      if (!this.password?.value?.length) {
+        this.password?.setErrors({
+          error: 'Введите пароль'
+        });
+        this.cdr.detectChanges();
+        return;
+      }
+
+      const body = {
+        login: this.userLogin?.login,
+        password: this.password?.value
+      }
+
+      this.userAuth$(body).pipe(
         finalize(() => this.cdr.detectChanges()),
         takeUntil(this.destroy$),
       )
-      .subscribe(
-      {
-        next: () => this.modalService.close(),
-        error: (error: HttpErrorResponse) => {
-          if (error.error.message === 'USER_NOT_FOUND' || error.error.message === 'BAD_PASSWORD') {
-            this.form?.controls['login'].setErrors({
-              error: 'Неправильный логин или пароль'
-            })
+        .subscribe(
+          {
+            next: () => !this.route ? this.modalService.close() : false,
+            error: (error: HttpErrorResponse) => {
+              if (error.error.message === 'USER_NOT_FOUND' || error.error.message === 'BAD_PASSWORD') {
+                this.login?.setErrors({
+                  error: 'Неправильный логин или пароль'
+                })
+              }
+            }
           }
-        }
-      }
-    )
+        )
+    }
+  }
+
+  private userAuth$(
+    body: {
+    login: string;
+    password: string
+  }
+  ) {
+    return this.userService.auth$(body)
   }
 }

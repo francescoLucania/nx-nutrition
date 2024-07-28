@@ -1,4 +1,4 @@
-@if (loading) {
+@if (!isBrowser || loading) {
   <nutrition-throbber></nutrition-throbber>
 } @else {
   <h3 class="heading-h3 mb-24 text-center">
@@ -11,7 +11,12 @@
   >
     <div>
       <div class="mb-4 text-error"
-           *ngIf="!login?.pristine && login?.errors!['error']"
+           *ngIf="!login?.pristine && login?.errors?.required"
+      >
+        Введите логин
+      </div>
+      <div class="mb-4 text-error"
+           *ngIf="!login?.pristine && login?.errors?.error"
       >
         {{login?.errors!['error']}}
       </div>
@@ -26,6 +31,11 @@
     </div>
 
     <div class="mt-24">
+      <div class="mb-4 text-error"
+           *ngIf="!login?.pristine && password?.errors?.error"
+      >
+        {{password?.errors?.error}}
+      </div>
       <neo-ui-input
         [type]="'password'"
         [size]="'large'"

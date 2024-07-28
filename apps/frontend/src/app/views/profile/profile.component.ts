@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { UserService } from '../../services';
-import { Observable } from 'rxjs';
+import { catchError, Observable, of, switchMap, tap } from 'rxjs';
 import { AsyncPipe, JsonPipe, NgIf } from '@angular/common';
+import { response } from 'express';
 
 @Component({
   selector: 'nutrition-profile',
@@ -22,6 +23,6 @@ export class ProfileComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.userData$ = this.userService.getUserProfileData$();
+    this.userData$ = this.userService.getUserProfileData$()
   }
 }

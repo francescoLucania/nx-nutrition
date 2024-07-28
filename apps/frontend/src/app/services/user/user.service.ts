@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, EMPTY, Observable, shareReplay, tap, } from 'rxjs';
+import { BehaviorSubject, catchError, EMPTY, Observable, of, shareReplay, tap, throwError } from 'rxjs';
 import { HttpRequest } from '@angular/common/http';
 import { ApiService } from '../api/api.service';
 import { UserAuthState } from '../../models/user/user.modal';
 import { BrowserService } from 'ngx-neo-ui';
+import { UserProfile } from '@nx-nutrition-models';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class UserService {
   private _isLoggedIn$: BehaviorSubject<UserAuthState> = new BehaviorSubject<UserAuthState>('processing');
   private isRefreshing = false;
 
-  private _userProfileData$: Observable<any> | undefined;
+  private _userProfileData$: Observable<UserProfile> | undefined;
 
   public set setAccessToken(value: string) {
     this.accessToken = value;
@@ -82,15 +83,14 @@ export class UserService {
       );
   }
 
-  public getUserProfileData$(force = false): Observable<any> {
-
+  public getUserProfileData$(force = false): Observable<UserProfile> {
+    console.log('this._userProfileData$', this._userProfileData$)
     if (force || !this._userProfileData$) {
       this.updateIsLoggedIn = 'processing';
-      this._userProfileData$ = this.apiService.getRequest('user/getUserData').pipe(
+      this._userProfileData$ = this.apiService.getRequest<UserProfile>('user/getUserProfileData').pipe(
         shareReplay(1),
       );
     }
-
-    return this._userProfileData$ ? this._userProfileData$ : EMPTY;
+    return this._userProfileData$
   }
 }

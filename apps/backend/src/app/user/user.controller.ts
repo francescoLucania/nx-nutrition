@@ -112,15 +112,15 @@ export class UserController {
   }
 
   @UseGuards(AuthGuard)
-  @Get('/getUserData')
-  public async  getUserData(
+  @Get('/getUserProfileData')
+  public async  getUserProfileData(
     @Req() request,
     @Response() response,
   ) {
-    console.log('getUserData response', request.headers)
+    console.log('getUserProfileData response', request.headers)
     const token = request?.headers['authorization']?.split(' ')?.[1];
     console.log('token', token);
-    const userData = await this.userService.getUserData(token);
+    const userData = await this.userService.getUserProfileData(token);
     console.log('userData', userData);
     response.send(userData);
   }

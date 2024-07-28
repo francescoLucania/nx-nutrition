@@ -24,8 +24,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       tap((response: any) => {
         const accessToken = response?.body?.accessToken
         if (accessToken) {
-          console.log('set accessToken', accessToken)
           userService.setAccessToken = accessToken;
+          userService.getUserProfileData$(true);
         }
       })
     );

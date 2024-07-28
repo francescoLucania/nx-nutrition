@@ -12,6 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
 import ValidationException from '../exception/validation/validation';
 import UnauthorizedException from '../exception/unauthorized/unauthorized';
+import { UserProfile } from '@nx-nutrition-models';
 
 @Injectable()
 export class UserService {
@@ -89,8 +90,21 @@ export class UserService {
     }
   }
 
-  public async getUserData(token: string) {
-    return await this.getUserByToken('ACCESS_TOKEN', token);
+  public async getUserProfileData(token: string) {
+    return this.buildUserProfileData(
+      await this.getUserByToken('ACCESS_TOKEN', token)
+    );
+  }
+
+  public buildUserProfileData(user: UserDocument): UserProfile {
+    return {
+      email: user.email,
+      phone: user.phone,
+      name: user.name,
+      fullName: user.fullName,
+      created: user.created,
+      lastActivity: user.lastActivity,
+    }
   }
 
   private async buildUserAuthData(user: UserDto) {

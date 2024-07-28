@@ -3,7 +3,7 @@ import { provideRouter } from '@angular/router';
 import { appRoutes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { authInterceptor } from './interceptors';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { UserService } from './services';
 
 export function initializerFactory(userService: UserService) {
@@ -14,6 +14,7 @@ export function initializerFactory(userService: UserService) {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient(
+      withFetch(),
       withInterceptors([
         authInterceptor,
       ])
