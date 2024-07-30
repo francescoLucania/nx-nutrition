@@ -1,0 +1,31 @@
+@if (!isBrowser) {
+  <ng-template [ngTemplateOutlet]="registrationForm"></ng-template>
+} @else {
+  @switch (state()) {
+    @case ('processing') {
+      <nutrition-throbber></nutrition-throbber>
+    }
+    @case ('registration-form') {
+      <ng-template [ngTemplateOutlet]="registrationForm"></ng-template>
+    }
+    @case ('password-form') {
+      <ng-template [ngTemplateOutlet]="passwordForm"></ng-template>
+    }
+    @case ('complete-view') {
+      <ng-template [ngTemplateOutlet]="completeView"></ng-template>
+    }
+  }
+}
+
+
+<ng-template #registrationForm>
+  registrationForm
+</ng-template>
+
+<ng-template #passwordForm>
+  passwordForm
+</ng-template>
+
+<ng-template #completeView>
+  completeView
+</ng-template>

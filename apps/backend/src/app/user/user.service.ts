@@ -72,8 +72,6 @@ export class UserService {
       await this.searchUserInModel({email: login}) :
       await this.searchUserInModel({phone: login})
 
-    console.log('user=>', user)
-
     if (user) {
       if (!(await this.loginPasswordEquals(user, password))) {
         throw new ValidationException(`BAD_PASSWORD`)
@@ -94,14 +92,24 @@ export class UserService {
   }
 
   public buildUserProfileData(user: UserDocument): UserProfile {
+    const {
+      email,
+      phone,
+      name,
+      fullName,
+      dateIssue,
+      created,
+      lastActivity
+    } = user
+
     return {
-      email: user.email,
-      phone: user.phone,
-      name: user.name,
-      fullName: user.fullName,
-      dateIssue: user.dateIssue,
-      created: user.created,
-      lastActivity: user.lastActivity,
+      email,
+      phone,
+      name,
+      fullName,
+      dateIssue,
+      created,
+      lastActivity,
     }
   }
 

@@ -50,7 +50,7 @@ export class ValidationService {
   };
 
   public formatLogin(
-    loginFormControl: AbstractControl<string> | undefined,
+    loginFormControl: AbstractControl<string>,
     loginTypes: LoginTypes[] = ['phone', 'email']
   ): { idType: LoginType; login: string } | false {
     let login = loginFormControl?.value;

@@ -6,17 +6,16 @@ import {
   InputStandaloneComponent,
   ModalService
 } from 'ngx-neo-ui';
-import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { JsonPipe, NgIf } from '@angular/common';
-import { LoginTypes, UserService, ValidationService } from '../../services';
+import { UserService, ValidationService } from '../../services';
 import { HttpErrorResponse } from '@angular/common/http';
 import { finalize, takeUntil } from 'rxjs';
 import { Router, RouterLink } from '@angular/router';
 import { ThrobberComponent } from '../throbber/throbber.component';
-import { LoginType } from '@nx-nutrition-models';
+import { LoginBody, LoginType } from '@nx-nutrition-models';
 
-class LoginForm {
-}
+type LoginForm = Record<keyof Omit<LoginBody, 'loginType'>, FormControl<string>>
 
 @Component({
   selector: 'nutrition-login-modal',
@@ -41,17 +40,17 @@ export class LoginModalComponent implements OnInit {
 
   @Input() private route: string | undefined;
 
-  public get login(): AbstractControl | undefined {
+  public get login(): FormControl<string> | undefined {
     return this.form?.controls['login']
   }
-  public get password(): AbstractControl | undefined {
+  public get password(): FormControl<string> | undefined {
     return this.form?.controls['password']
   }
 
   public loading = true;
   public isBrowser = false;
-  public form: FormGroup | undefined;
-  public userLogin: { idType: LoginType; login: string } | boolean = false;
+  public form: FormGroup<LoginForm> | undefined;
+  public userLogin: { idType: LoginType; login: string } | false = false;
 
   constructor(
     private destroy$: DestroyService,
@@ -94,10 +93,18 @@ export class LoginModalComponent implements OnInit {
   }
 
   private initForm(): void {
-    this.form = new FormGroup<LoginForm>(    {
-      login: new FormControl(),
-      password: new FormControl()
-    })
+    // @ts-ignore
+    this.form = new FormGroup<LoginForm>( {
+      login: new FormControl('', {
+        nonNullable: true,
+        validators: Validators.required,
+      }),
+      password: new FormControl('', {
+        nonNullable: true,
+        validators: Validators.required,
+      })
+    });
+
     this.form?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(
@@ -106,7 +113,11 @@ export class LoginModalComponent implements OnInit {
   }
 
   public auth() {
-    this.userLogin = this.validationService.formatLogin(this.login);
+
+    if (this.login) {
+      this.userLogin = this.validationService.formatLogin(this.login);
+    }
+
 
     if (typeof this.userLogin !== 'boolean') {
 
@@ -118,7 +129,7 @@ export class LoginModalComponent implements OnInit {
         return;
       }
 
-      const body = {
+      const body: LoginBody = <LoginBody> {
         login: this.userLogin?.login,
         loginType: this.userLogin?.idType,
         password: this.password?.value
@@ -148,11 +159,12 @@ export class LoginModalComponent implements OnInit {
   }
 
   private userAuth$(
-    body: {
-    login: string;
-    password: string
-  }
+    body: LoginBody,
   ) {
     return this.userService.auth$(body)
+  }
+
+  public closeModal() {
+    this.modalService.close()
   }
 }
