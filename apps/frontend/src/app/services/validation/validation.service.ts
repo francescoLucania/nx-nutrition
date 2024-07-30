@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, UntypedFormControl } from '@angular/forms';
+import { LoginType } from '@nx-nutrition-models';
 
 export type LoginTypes = 'phone' | 'email';
 
@@ -51,7 +52,7 @@ export class ValidationService {
   public formatLogin(
     loginFormControl: AbstractControl<string> | undefined,
     loginTypes: LoginTypes[] = ['phone', 'email']
-  ): { idType: string; login: string } | false {
+  ): { idType: LoginType; login: string } | false {
     let login = loginFormControl?.value;
     const loginType = new Map();
 

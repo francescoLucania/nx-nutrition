@@ -3,6 +3,7 @@ export type UserProfile = {
   phone: string;
   name: string;
   fullName: string;
+  dateIssue: string;
   created: string;
   lastActivity: string;
 }

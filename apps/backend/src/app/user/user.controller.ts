@@ -14,6 +14,7 @@ import { UserLoginDto } from './dto/user-login.dto';
 import { ValidationPipe } from '../pipes/validation/validation';
 import { UserDto } from './dto/user-public.dto';
 import { AuthGuard } from '../guards/auth/auth';
+import { LoginBody } from '@nx-nutrition-models';
 // import { AuthGuard } from '../guards/auth/auth';
 
 
@@ -83,11 +84,10 @@ export class UserController {
   @UsePipes(ValidationPipe)
   @Post('/login')
   public async login(
-    @Body() body: UserLoginDto,
+    @Body() body: LoginBody,
     @Response() response: UserDto
     ) {
-    const { login, password } = body;
-    const user = await this.userService.login(login, password);
+    const user = await this.userService.login(body);
 
     this.setRefreshTokenToken(response, user).send(user);
   }

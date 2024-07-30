@@ -21,6 +21,9 @@ export class User {
   fullName: string;
 
   @Prop({unique: true, required: true})
+  dateIssue: string;
+
+  @Prop({unique: true, required: true})
   created: string;
 
   @Prop({unique: true, required: true})

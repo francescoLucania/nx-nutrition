@@ -12,7 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
 import ValidationException from '../exception/validation/validation';
 import UnauthorizedException from '../exception/unauthorized/unauthorized';
-import { UserProfile } from '@nx-nutrition-models';
+import { LoginBody, LoginType, UserProfile } from '@nx-nutrition-models';
 
 @Injectable()
 export class UserService {
@@ -64,29 +64,26 @@ export class UserService {
     const picturePath = this.fileService.createFile(FileType.IMAGE, picture);
   }
 
-  async login(login: string, password: string): Promise<UserDto> {
-    const userSearchByEmail = await this.searchUserInModel({email: login});
+  async login(body: LoginBody): Promise<UserDto> {
 
-    if (
-      userSearchByEmail &&
-      await this.loginPasswordEquals(userSearchByEmail, password)
-    ) {
-      return this.buildUserAuthData(new UserDto(userSearchByEmail));
-    }
+    const {login, password, loginType} = body;
 
-    const userSearchByPhone = await this.searchUserInModel({phone: login});
+    const user = loginType === 'email' ?
+      await this.searchUserInModel({email: login}) :
+      await this.searchUserInModel({phone: login})
 
-    if (
-      userSearchByPhone &&
-      await this.loginPasswordEquals(userSearchByPhone, password)
-    ) {
-      return this.buildUserAuthData(new UserDto(userSearchByPhone));
-    }
+    console.log('user=>', user)
 
-    if (!userSearchByEmail && !userSearchByPhone) {
-      throw new ValidationException(`USER_NOT_FOUND`);
+    if (user) {
+      if (!(await this.loginPasswordEquals(user, password))) {
+        throw new ValidationException(`BAD_PASSWORD`)
+      } else if (user.isActivated) {
+        return this.buildUserAuthData(new UserDto(user));
+      } else {
+        throw new ValidationException(`USER_NOT_ACTIVATED`);
+      }
     } else {
-      throw new ValidationException(`BAD_PASSWORD`)
+      throw new ValidationException(`USER_NOT_FOUND`);
     }
   }
 
@@ -102,6 +99,7 @@ export class UserService {
       phone: user.phone,
       name: user.name,
       fullName: user.fullName,
+      dateIssue: user.dateIssue,
       created: user.created,
       lastActivity: user.lastActivity,
     }

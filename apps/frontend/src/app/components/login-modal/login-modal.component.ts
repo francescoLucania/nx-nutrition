@@ -11,8 +11,9 @@ import { JsonPipe, NgIf } from '@angular/common';
 import { LoginTypes, UserService, ValidationService } from '../../services';
 import { HttpErrorResponse } from '@angular/common/http';
 import { finalize, takeUntil } from 'rxjs';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ThrobberComponent } from '../throbber/throbber.component';
+import { LoginType } from '@nx-nutrition-models';
 
 class LoginForm {
 }
@@ -27,7 +28,8 @@ class LoginForm {
     NgIf,
     ReactiveFormsModule,
     ThrobberComponent,
-    JsonPipe
+    JsonPipe,
+    RouterLink
   ],
   providers: [DestroyService],
   templateUrl: './login-modal.component.html',
@@ -49,7 +51,7 @@ export class LoginModalComponent implements OnInit {
   public loading = true;
   public isBrowser = false;
   public form: FormGroup | undefined;
-  public userLogin: { idType: string; login: string } | boolean = false;
+  public userLogin: { idType: LoginType; login: string } | boolean = false;
 
   constructor(
     private destroy$: DestroyService,
@@ -118,6 +120,7 @@ export class LoginModalComponent implements OnInit {
 
       const body = {
         login: this.userLogin?.login,
+        loginType: this.userLogin?.idType,
         password: this.password?.value
       }
 
@@ -132,6 +135,10 @@ export class LoginModalComponent implements OnInit {
               if (error.error.message === 'USER_NOT_FOUND' || error.error.message === 'BAD_PASSWORD') {
                 this.login?.setErrors({
                   error: 'Неправильный логин или пароль'
+                })
+              } else if (error.error.message === 'USER_NOT_ACTIVATED') {
+                this.login?.setErrors({
+                  error: 'Учетная запись не активирована, на указанной при регистрации почте должна быть ссылка для активации'
                 })
               }
             }

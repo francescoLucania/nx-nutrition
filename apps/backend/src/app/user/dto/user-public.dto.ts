@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { User, UserDocument } from '../schemas/user.schema';
+import { User } from '../schemas/user.schema';
 
 export class UserDto {
   email: string;
