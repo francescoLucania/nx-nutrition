@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString, Length } from 'class-validator';
+import { Gender } from '@nx-nutrition-models';
 
 export class CreateUserDto {
   @IsEmail({}, {message: 'Не корректный email'})
@@ -12,6 +13,8 @@ export class CreateUserDto {
   readonly name: string;
   @IsNotEmpty({message: 'Не должно быть пустым'})
   readonly fullName: string;
+  @IsNotEmpty({message: 'Не должно быть пустым'})
+  readonly gender: Gender;
   @IsNotEmpty({message: 'Не должно быть пустым'})
   readonly dateIssue: string;
   @IsNotEmpty({message: 'Не должно быть пустым'})

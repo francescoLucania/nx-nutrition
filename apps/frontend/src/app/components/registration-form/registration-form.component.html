@@ -19,7 +19,140 @@
 
 
 <ng-template #registrationForm>
-  registrationForm
+  <form *ngIf="form" [formGroup]="form">
+    <div>
+      <div class="mb-4 text-error"
+           *ngIf="!name?.pristine && name?.errors?.required"
+      >
+        Введите Имя
+      </div>
+      <div class="mb-4 text-error"
+           *ngIf="!name?.pristine && name?.errors?.error"
+      >
+        {{fullName?.errors!['error']}}
+      </div>
+      <neo-ui-input
+        [size]="'large'"
+        [formControlName]="'name'"
+        [placeholder]="'Имя'"
+        [autocomplete]="true"
+        [ariaLabel]="'Имя'"
+      >
+      </neo-ui-input>
+    </div>
+
+    <div class="mt-24">
+      <div class="mb-4 text-error"
+           *ngIf="!fullName?.pristine && fullName?.errors?.required"
+      >
+        Введите ФИО
+      </div>
+      <div class="mb-4 text-error"
+           *ngIf="!fullName?.pristine && fullName?.errors?.error"
+      >
+        {{fullName?.errors!['error']}}
+      </div>
+      <neo-ui-input
+        [size]="'large'"
+        [formControlName]="'fullName'"
+        [placeholder]="'ФИО'"
+        [autocomplete]="true"
+        [name]="'ФИО'"
+      >
+      </neo-ui-input>
+    </div>
+
+    <div class="mt-24">
+      <div class="mb-4 text-error"
+           *ngIf="!email?.pristine && email?.errors?.required"
+      >
+        Введите email
+      </div>
+      <div class="mb-4 text-error"
+           *ngIf="!email?.pristine && email?.errors?.error"
+      >
+        {{email?.errors!['error']}}
+      </div>
+      <neo-ui-input
+        [size]="'large'"
+        [formControlName]="'email'"
+        [placeholder]="'email@example.ru'"
+        [autocomplete]="true"
+        [name]="'ФИО'"
+      >
+      </neo-ui-input>
+    </div>
+
+    <div class="mt-24">
+      <div class="mb-4 text-error"
+           *ngIf="!phone?.pristine && phone?.errors?.required"
+      >
+        Введите номер телефона
+      </div>
+      <div class="mb-4 text-error"
+           *ngIf="!phone?.pristine && phone?.errors?.error"
+      >
+        {{email?.errors!['error']}}
+      </div>
+      <neo-ui-input
+        [size]="'large'"
+        [formControlName]="'phone'"
+        [maskitoOptions]="phoneMask"
+        [placeholder]="'+7(999)999-99-99'"
+        [autocomplete]="true"
+        [name]="'ФИО'"
+      >
+      </neo-ui-input>
+    </div>
+
+    <div class="mt-24">
+      <div class="mb-4 text-error"
+           *ngIf="!dateIssue?.pristine && dateIssue?.errors?.required"
+      >
+        Введите dateIssue
+      </div>
+      <div class="mb-4 text-error"
+           *ngIf="!dateIssue?.pristine && dateIssue?.errors?.error"
+      >
+        {{dateIssue?.errors!['error']}}
+      </div>
+      <neo-ui-input
+        [size]="'large'"
+        [formControlName]="'dateIssue'"
+        [placeholder]="'email@example.ru'"
+        [name]="'ФИО'"
+      >
+      </neo-ui-input>
+
+      <div class="mt-24">
+
+        <h5 class="heading-h5">Укажите пол:</h5>
+        <div class="mt-8">
+          <neo-ui-radio
+            [label]="'Мужской'"
+            [value]="'male'"
+            [formControlName]="'gender'"
+          ></neo-ui-radio>
+        </div>
+        <div class="mt-8">
+          <neo-ui-radio
+            [label]="'Женский'"
+            [value]="'male'"
+            [formControlName]="'gender'"
+          ></neo-ui-radio>
+        </div>
+      </div>
+    </div>
+    <div class="mt-24">
+      <neo-ui-button
+        [size]="'large'"
+        [buttonType]="'submit'"
+        [fullWidth]="true"
+      >
+        Войти
+      </neo-ui-button>
+    </div>
+  </form>
 </ng-template>
 
 <ng-template #passwordForm>

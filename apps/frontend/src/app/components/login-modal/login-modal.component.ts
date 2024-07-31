@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, signal } from '@angular/core';
 import {
   BrowserService,
   ButtonStandaloneComponent,
@@ -41,16 +41,15 @@ export class LoginModalComponent implements OnInit {
   @Input() private route: string | undefined;
 
   public get login(): FormControl<string> | undefined {
-    return this.form?.controls['login']
+    return this.form?.controls['login'];
   }
   public get password(): FormControl<string> | undefined {
-    return this.form?.controls['password']
+    return this.form?.controls['password'];
   }
 
-  public loading = true;
-  public isBrowser = false;
+  public loading  = signal(true);
+  public isBrowser = signal(false);
   public form: FormGroup<LoginForm> | undefined;
-  public userLogin: { idType: LoginType; login: string } | false = false;
 
   constructor(
     private destroy$: DestroyService,
@@ -68,7 +67,7 @@ export class LoginModalComponent implements OnInit {
   }
 
   private initState(): void {
-    this.isBrowser = this.browserService.isBrowser;
+    this.isBrowser.set(this.browserService.isBrowser);
     this.userService.isLoggedIn$
       .pipe(
         takeUntil(this.destroy$),
@@ -76,14 +75,13 @@ export class LoginModalComponent implements OnInit {
       .subscribe((value) => {
         switch (value) {
           case 'processing':
-            this.loading = true;
+            this.loading.set(true);
             break;
           case 'not':
             this.initForm();
-            this.loading = false;
+            this.loading.set(false);
             break;
           case 'done':
-            console.log('this.route', this.route);
             this.router.navigate([this.route]);
             this.modalService.close();
             break;
@@ -93,7 +91,6 @@ export class LoginModalComponent implements OnInit {
   }
 
   private initForm(): void {
-    // @ts-ignore
     this.form = new FormGroup<LoginForm>( {
       login: new FormControl('', {
         nonNullable: true,
@@ -114,12 +111,13 @@ export class LoginModalComponent implements OnInit {
 
   public auth() {
 
+    let userLogin;
+
     if (this.login) {
-      this.userLogin = this.validationService.formatLogin(this.login);
+      userLogin = this.validationService.formatLogin(this.login);
     }
 
-
-    if (typeof this.userLogin !== 'boolean') {
+    if (userLogin) {
 
       if (!this.password?.value?.length) {
         this.password?.setErrors({
@@ -130,8 +128,8 @@ export class LoginModalComponent implements OnInit {
       }
 
       const body: LoginBody = <LoginBody> {
-        login: this.userLogin?.login,
-        loginType: this.userLogin?.idType,
+        login: userLogin?.login,
+        loginType: userLogin?.idType,
         password: this.password?.value
       }
 

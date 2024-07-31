@@ -6,14 +6,22 @@ import {
   signal,
   WritableSignal
 } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserService } from '../../services';
 import { takeUntil } from 'rxjs';
-import { BrowserService, DestroyService, ModalService } from 'ngx-neo-ui';
+import {
+  BrowserService, ButtonStandaloneComponent,
+  DestroyService,
+  InputStandaloneComponent,
+  ModalService,
+  RadioStandaloneComponent
+} from 'ngx-neo-ui';
 import { RegistrationBody } from '@nx-nutrition-models';
 import { Router } from '@angular/router';
 import { ThrobberComponent } from '../throbber/throbber.component';
-import { NgTemplateOutlet } from '@angular/common';
+import { NgIf, NgTemplateOutlet } from '@angular/common';
+import { MASKITO_DEFAULT_OPTIONS, MaskitoOptions } from '@maskito/core';
+import { maskitoPhoneOptionsGenerator } from '@maskito/phone';
 
 type RegistrationForm = Record<keyof RegistrationBody, FormControl<string>>
 
@@ -22,7 +30,12 @@ type RegistrationForm = Record<keyof RegistrationBody, FormControl<string>>
   standalone: true,
   imports: [
     ThrobberComponent,
-    NgTemplateOutlet
+    NgTemplateOutlet,
+    ReactiveFormsModule,
+    NgIf,
+    InputStandaloneComponent,
+    RadioStandaloneComponent,
+    ButtonStandaloneComponent
   ],
   providers: [
     DestroyService
@@ -33,6 +46,25 @@ type RegistrationForm = Record<keyof RegistrationBody, FormControl<string>>
 })
 export class RegistrationFormComponent implements OnInit {
 
+  public get email(): FormControl<string> | undefined {
+    return this.form?.controls['email'];
+  }
+  public get phone(): FormControl<string> | undefined {
+    return this.form?.controls['phone'];
+  }
+  public get name(): FormControl<string> | undefined {
+    return this.form?.controls['name'];
+  }
+  public get fullName(): FormControl<string> | undefined {
+    return this.form?.controls['fullName'];
+  }
+  public get dateIssue(): FormControl<string> | undefined {
+    return this.form?.controls['dateIssue'];
+  }
+  public get password(): FormControl<string> | undefined {
+    return this.form?.controls['password'];
+  }
+
   public isBrowser = false;
 
   public state: WritableSignal<
@@ -41,7 +73,9 @@ export class RegistrationFormComponent implements OnInit {
     'password-form' |
     'complete-view'
   > = signal('registration-form');
-  // public form: FormGroup<RegistrationForm>;
+
+  public form: FormGroup<RegistrationForm> | undefined;
+  public phoneMask: MaskitoOptions = MASKITO_DEFAULT_OPTIONS
 
   constructor(
     private userService: UserService,
@@ -54,7 +88,7 @@ export class RegistrationFormComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    // this.modalService.close();
+    this.modalService.close();
     this.initState();
   }
 
@@ -71,6 +105,7 @@ export class RegistrationFormComponent implements OnInit {
             break;
           case 'not':
             this.state.set('registration-form');
+            this.initForm()
             break;
           case 'done':
             this.router.navigate(['']);
@@ -79,5 +114,47 @@ export class RegistrationFormComponent implements OnInit {
         }
         this.cdr.detectChanges()
       })
+  }
+
+  private async initForm(): Promise<void> {
+
+    this.form = new FormGroup<RegistrationForm>({
+      email: new FormControl('', {
+        nonNullable: true,
+        validators: Validators.required,
+      }),
+      phone: new FormControl('', {
+        nonNullable: true,
+        validators: Validators.required,
+      }),
+      name: new FormControl('', {
+        nonNullable: true,
+        validators: Validators.required,
+      }),
+      fullName: new FormControl('', {
+        nonNullable: true,
+        validators: Validators.required,
+      }),
+      gender: new FormControl('', {
+        nonNullable: true,
+        validators: Validators.required,
+      }),
+      dateIssue: new FormControl('', {
+        nonNullable: true,
+        validators: Validators.required,
+      }),
+      password: new FormControl('', {
+        nonNullable: true,
+        validators: Validators.required,
+      }),
+
+    });
+
+    this.phoneMask = maskitoPhoneOptionsGenerator({
+      countryIsoCode: 'RU',
+      metadata: await import('libphonenumber-js/min/metadata').then(
+        (m) => m.default
+      ),
+    });
   }
 }

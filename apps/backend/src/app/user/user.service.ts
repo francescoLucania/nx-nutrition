@@ -97,6 +97,7 @@ export class UserService {
       phone,
       name,
       fullName,
+      gender,
       dateIssue,
       created,
       lastActivity
@@ -107,6 +108,7 @@ export class UserService {
       phone,
       name,
       fullName,
+      gender,
       dateIssue,
       created,
       lastActivity,

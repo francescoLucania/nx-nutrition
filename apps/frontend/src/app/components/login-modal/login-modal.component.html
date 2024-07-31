@@ -1,4 +1,4 @@
-@if (!isBrowser || loading) {
+@if (!isBrowser() || loading()) {
   <nutrition-throbber></nutrition-throbber>
 } @else {
   <h3 class="heading-h3 mb-24 text-center">
@@ -26,7 +26,6 @@
         [placeholder]="'Логин'"
         [autocomplete]="true"
       >
-
       </neo-ui-input>
     </div>
 

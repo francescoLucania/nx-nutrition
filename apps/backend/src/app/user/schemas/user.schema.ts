@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Gender } from '@nx-nutrition-models';
 
 export type UserDocument = User & Document;
 
@@ -19,6 +20,9 @@ export class User {
 
   @Prop({unique: true, required: true})
   fullName: string;
+
+  @Prop({type: String, unique: true, required: true})
+  gender: Gender;
 
   @Prop({unique: true, required: true})
   dateIssue: string;
