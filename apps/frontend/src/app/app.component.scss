@@ -1,0 +1,9 @@
+@use 'ngx-neo-ui/assets/styles/theme-provider/theme_provider' as theme;
+
+.app {
+  padding-bottom: 48px;
+
+  @include theme.mq(md) {
+    padding-bottom: 64px;
+  }
+}

@@ -50,9 +50,14 @@ export class ValidationService {
   };
 
   public formatLogin(
-    loginFormControl: AbstractControl<string>,
+    loginFormControl: AbstractControl<string | null>,
     loginTypes: LoginTypes[] = ['phone', 'email']
   ): { idType: LoginType; login: string } | false {
+
+    if (!loginFormControl) {
+      return false;
+    }
+
     let login = loginFormControl?.value;
     const loginType = new Map();
 

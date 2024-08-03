@@ -1,0 +1,44 @@
+@if (
+  size &&
+  control &&
+  placeholder &&
+  autocomplete &&
+  ariaLabel
+  ) {
+
+  <ng-container *ngIf="error()">
+    @for (item of error() | keyvalue; track item) {
+      <div class="mb-4 text-error">
+        {{item.value}}
+      </div>
+    }
+  </ng-container>
+
+  @if (maskitoOptions) {
+    <neo-ui-input
+      [maskitoOptions]="maskitoOptions"
+      [formControl]="$any(control)"
+      [size]="size"
+      [placeholder]="placeholder"
+      [autocomplete]="autocomplete"
+      [ariaLabel]="ariaLabel"
+      [name]="name"
+      [type]="type"
+    >
+    </neo-ui-input>
+  } @else {
+    <neo-ui-input
+      [formControl]="$any(control)"
+      [size]="size"
+      [placeholder]="placeholder"
+      [autocomplete]="autocomplete"
+      [ariaLabel]="ariaLabel"
+      [name]="name"
+      [type]="type"
+    >
+    </neo-ui-input>
+  }
+}
+
+
+

@@ -14,8 +14,9 @@ import { finalize, takeUntil } from 'rxjs';
 import { Router, RouterLink } from '@angular/router';
 import { ThrobberComponent } from '../throbber/throbber.component';
 import { LoginBody, LoginType } from '@nx-nutrition-models';
+import { CommonFormControl, GetCommonFormControl } from '../../models/forms/form-control';
 
-type LoginForm = Record<keyof Omit<LoginBody, 'loginType'>, FormControl<string>>
+type LoginForm = Record<keyof Omit<LoginBody, 'loginType'>, CommonFormControl>
 
 @Component({
   selector: 'nutrition-login-modal',
@@ -40,11 +41,11 @@ export class LoginModalComponent implements OnInit {
 
   @Input() private route: string | undefined;
 
-  public get login(): FormControl<string> | undefined {
-    return this.form?.controls['login'];
+  public get login(): GetCommonFormControl {
+    return this.form?.controls['login'] || null;
   }
-  public get password(): FormControl<string> | undefined {
-    return this.form?.controls['password'];
+  public get password(): GetCommonFormControl {
+    return this.form?.controls['password'] || null;
   }
 
   public loading  = signal(true);
@@ -92,14 +93,8 @@ export class LoginModalComponent implements OnInit {
 
   private initForm(): void {
     this.form = new FormGroup<LoginForm>( {
-      login: new FormControl('', {
-        nonNullable: true,
-        validators: Validators.required,
-      }),
-      password: new FormControl('', {
-        nonNullable: true,
-        validators: Validators.required,
-      })
+      login: new FormControl(null),
+      password: new FormControl(null)
     });
 
     this.form?.valueChanges

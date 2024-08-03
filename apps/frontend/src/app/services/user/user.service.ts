@@ -84,7 +84,6 @@ export class UserService {
   }
 
   public getUserProfileData$(force = false): Observable<UserProfile> {
-    console.log('this._userProfileData$', this._userProfileData$)
     if (force || !this._userProfileData$) {
       this.updateIsLoggedIn = 'processing';
       this._userProfileData$ = this.apiService.getRequest<UserProfile>('user/getUserProfileData').pipe(

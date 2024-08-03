@@ -1,0 +1,22 @@
+@use 'ngx-neo-ui/assets/styles/theme-provider/theme_provider' as theme;
+
+.registration-form {
+
+  &__input-grid {
+    @include theme.mq(md) {
+      display: flex;
+    }
+  }
+
+  &__input-grid-col {
+    &:not(:first-child) {
+      @include theme.mq(sm) {
+        margin-top: 8px;
+      }
+
+      @include theme.mq(md) {
+        margin-left: 32px;
+      }
+    }
+  }
+}

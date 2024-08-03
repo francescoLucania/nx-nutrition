@@ -1,15 +1,15 @@
 @if (!isBrowser) {
-  <ng-template [ngTemplateOutlet]="registrationForm"></ng-template>
+  <ng-template [ngTemplateOutlet]="registrationFormTemplate"></ng-template>
 } @else {
   @switch (state()) {
     @case ('processing') {
       <nutrition-throbber></nutrition-throbber>
     }
     @case ('registration-form') {
-      <ng-template [ngTemplateOutlet]="registrationForm"></ng-template>
+      <ng-template [ngTemplateOutlet]="registrationFormTemplate"></ng-template>
     }
     @case ('password-form') {
-      <ng-template [ngTemplateOutlet]="passwordForm"></ng-template>
+      <ng-template [ngTemplateOutlet]="passwordFormTemplate"></ng-template>
     }
     @case ('complete-view') {
       <ng-template [ngTemplateOutlet]="completeView"></ng-template>
@@ -18,128 +18,100 @@
 }
 
 
-<ng-template #registrationForm>
-  <form *ngIf="form" [formGroup]="form">
+<ng-template #registrationFormTemplate>
+  <form class="registration-form" *ngIf="form" [formGroup]="form">
     <div>
-      <div class="mb-4 text-error"
-           *ngIf="!name?.pristine && name?.errors?.required"
-      >
-        Введите Имя
-      </div>
-      <div class="mb-4 text-error"
-           *ngIf="!name?.pristine && name?.errors?.error"
-      >
-        {{fullName?.errors!['error']}}
-      </div>
-      <neo-ui-input
+      <nutrition-base-input
+        *ngIf="name"
         [size]="'large'"
+        [setError]="name.errors"
         [formControlName]="'name'"
         [placeholder]="'Имя'"
         [autocomplete]="true"
         [ariaLabel]="'Имя'"
-      >
-      </neo-ui-input>
+      ></nutrition-base-input>
     </div>
 
     <div class="mt-24">
-      <div class="mb-4 text-error"
-           *ngIf="!fullName?.pristine && fullName?.errors?.required"
-      >
-        Введите ФИО
-      </div>
-      <div class="mb-4 text-error"
-           *ngIf="!fullName?.pristine && fullName?.errors?.error"
-      >
-        {{fullName?.errors!['error']}}
-      </div>
-      <neo-ui-input
+      <nutrition-base-input
+        *ngIf="fullName"
         [size]="'large'"
+        [setError]="fullName.errors"
         [formControlName]="'fullName'"
         [placeholder]="'ФИО'"
         [autocomplete]="true"
-        [name]="'ФИО'"
-      >
-      </neo-ui-input>
+        [ariaLabel]="'ФИО'"
+      ></nutrition-base-input>
     </div>
 
     <div class="mt-24">
-      <div class="mb-4 text-error"
-           *ngIf="!email?.pristine && email?.errors?.required"
-      >
-        Введите email
-      </div>
-      <div class="mb-4 text-error"
-           *ngIf="!email?.pristine && email?.errors?.error"
-      >
-        {{email?.errors!['error']}}
-      </div>
-      <neo-ui-input
+      <nutrition-base-input
+        *ngIf="email"
         [size]="'large'"
+        [setError]="email.errors"
         [formControlName]="'email'"
         [placeholder]="'email@example.ru'"
         [autocomplete]="true"
-        [name]="'ФИО'"
-      >
-      </neo-ui-input>
+        [ariaLabel]="'email'"
+      ></nutrition-base-input>
     </div>
 
     <div class="mt-24">
-      <div class="mb-4 text-error"
-           *ngIf="!phone?.pristine && phone?.errors?.required"
-      >
-        Введите номер телефона
-      </div>
-      <div class="mb-4 text-error"
-           *ngIf="!phone?.pristine && phone?.errors?.error"
-      >
-        {{email?.errors!['error']}}
-      </div>
-      <neo-ui-input
-        [size]="'large'"
-        [formControlName]="'phone'"
+      <nutrition-base-input
+        *ngIf="phone"
         [maskitoOptions]="phoneMask"
+        [size]="'large'"
+        [setError]="phone.errors"
+        [formControlName]="'phone'"
         [placeholder]="'+7(999)999-99-99'"
         [autocomplete]="true"
-        [name]="'ФИО'"
-      >
-      </neo-ui-input>
+        [ariaLabel]="'Телефон'"
+      ></nutrition-base-input>
     </div>
 
     <div class="mt-24">
       <div class="mb-4 text-error"
-           *ngIf="!dateIssue?.pristine && dateIssue?.errors?.required"
-      >
-        Введите dateIssue
-      </div>
-      <div class="mb-4 text-error"
-           *ngIf="!dateIssue?.pristine && dateIssue?.errors?.error"
+           *ngIf="dateIssue?.errors?.error"
       >
         {{dateIssue?.errors!['error']}}
       </div>
       <neo-ui-input
+        [maskitoOptions]="dateMask"
         [size]="'large'"
         [formControlName]="'dateIssue'"
-        [placeholder]="'email@example.ru'"
+        [placeholder]="'01.01.1999'"
         [name]="'ФИО'"
       >
       </neo-ui-input>
 
       <div class="mt-24">
 
-        <h5 class="heading-h5">Укажите пол:</h5>
-        <div class="mt-8">
-          <neo-ui-radio
-            [label]="'Мужской'"
-            [value]="'male'"
-            [formControlName]="'gender'"
-          ></neo-ui-radio>
-        </div>
-        <div class="mt-8">
-          <neo-ui-radio
-            [label]="'Женский'"
-            [value]="'male'"
-            [formControlName]="'gender'"
-          ></neo-ui-radio>
+        <h5 class="heading-h5">Укажите пол
+          <span class="mb-4 text-error text-base-small"
+               *ngIf="gender?.errors?.error"
+          >
+            (<b>{{gender?.errors?.error}}</b>)
+          </span>
+          :
+        </h5>
+        <div class="registration-form__input-grid mt-8">
+
+          <div class="registration-form__input-grid-col">
+            <neo-ui-radio
+              [label]="'Мужской'"
+              [value]="'male'"
+              [formControlName]="'gender'"
+            ></neo-ui-radio>
+          </div>
+
+          <div class="registration-form__input-grid-col">
+            <neo-ui-radio
+              [label]="'Женский'"
+              [value]="'male'"
+              [formControlName]="'gender'"
+            ></neo-ui-radio>
+          </div>
+
         </div>
       </div>
     </div>
@@ -148,6 +120,7 @@
         [size]="'large'"
         [buttonType]="'submit'"
         [fullWidth]="true"
+        (click)="continue()"
       >
         Войти
       </neo-ui-button>
@@ -155,10 +128,40 @@
   </form>
 </ng-template>
 
-<ng-template #passwordForm>
-  passwordForm
+<ng-template #passwordFormTemplate>
+  <form class="registration-form" *ngIf="passwordForm" [formGroup]="passwordForm">
+    <div>
+      <nutrition-base-input
+        *ngIf="password"
+        [type]="'password'"
+        [maskitoOptions]="phoneMask"
+        [size]="'large'"
+        [setError]="password.errors"
+        [formControlName]="'password'"
+        [placeholder]="'Пароль'"
+        [autocomplete]="true"
+        [ariaLabel]="'Пароль'"
+      ></nutrition-base-input>
+    </div>
+
+    <div class="mt-24">
+      <nutrition-base-input
+        *ngIf="replayPassword"
+        [type]="'password'"
+        [maskitoOptions]="phoneMask"
+        [size]="'large'"
+        [setError]="replayPassword.errors"
+        [formControlName]="'replayPassword'"
+        [placeholder]="'Повторите пароль'"
+        [autocomplete]="true"
+        [ariaLabel]="'Повторите пароль'"
+      ></nutrition-base-input>
+    </div>
+  </form>
 </ng-template>
 
 <ng-template #completeView>
   completeView
 </ng-template>
+
+
