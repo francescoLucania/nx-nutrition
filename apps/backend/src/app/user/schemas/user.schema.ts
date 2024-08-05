@@ -15,25 +15,25 @@ export class User {
   @Prop({unique: true, required: true})
   phone: string;
 
-  @Prop({unique: true, required: true})
+  @Prop({required: true})
   name: string;
 
-  @Prop({unique: true, required: true})
+  @Prop({required: true})
   fullName: string;
 
-  @Prop({type: String, unique: true, required: true})
+  @Prop({type: String, required: true})
   gender: Gender;
 
-  @Prop({unique: true, required: true})
+  @Prop({required: true})
   dateIssue: string;
 
-  @Prop({unique: true, required: true})
+  @Prop({required: true})
   created: string;
 
-  @Prop({unique: true, required: true})
+  @Prop({required: true})
   lastActivity: string;
 
-  @Prop({unique: true, required: true, default: false})
+  @Prop({required: true, default: false})
   isActivated: boolean;
 
   @Prop({unique: false, required: false})

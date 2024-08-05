@@ -1,14 +1,14 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
+  Component, effect,
   OnInit,
   signal,
   WritableSignal
 } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
 import { LoginTypes, UserService, ValidationService } from '../../services';
-import { takeUntil } from 'rxjs';
+import { Observable, takeUntil } from 'rxjs';
 import {
   BrowserService, ButtonStandaloneComponent,
   DestroyService,
@@ -16,7 +16,7 @@ import {
   ModalService,
   RadioStandaloneComponent,
 } from 'ngx-neo-ui';
-import { RegistrationBody } from '@nx-nutrition-models';
+import { RegistrationBody, RegistrationError, RegistrationErrors } from '@nx-nutrition-models';
 import { Router } from '@angular/router';
 import { ThrobberComponent } from '../throbber/throbber.component';
 import { JsonPipe, NgIf, NgTemplateOutlet } from '@angular/common';
@@ -25,6 +25,7 @@ import { maskitoPhoneOptionsGenerator } from '@maskito/phone';
 import { maskitoDateOptionsGenerator } from '@maskito/kit';
 import { CommonFormControl, GetCommonFormControl } from '../../models/forms/form-control';
 import { BaseInputComponent } from '../base-input/base-input.component';
+import { matchValidator } from '../../validators';
 
 type RegistrationForm = Record<keyof RegistrationBody, CommonFormControl>;
 type PasswordForm = {
@@ -56,22 +57,22 @@ type PasswordForm = {
 export class RegistrationFormComponent implements OnInit {
 
   public get email(): GetCommonFormControl {
-    return this.form?.controls['email'] || null;
+    return this.registrationForm?.controls['email'] || null;
   }
   public get phone(): GetCommonFormControl {
-    return this.form?.controls['phone'] || null;
+    return this.registrationForm?.controls['phone'] || null;
   }
   public get name(): GetCommonFormControl {
-    return this.form?.controls['name'] || null;
+    return this.registrationForm?.controls['name'] || null;
   }
   public get fullName(): GetCommonFormControl {
-    return this.form?.controls['fullName'] || null;
+    return this.registrationForm?.controls['fullName'] || null;
   }
   public get dateIssue(): GetCommonFormControl {
-    return this.form?.controls['dateIssue'] || null;
+    return this.registrationForm?.controls['dateIssue'] || null;
   }
   public get gender(): GetCommonFormControl {
-    return this.form?.controls['gender'] || null;
+    return this.registrationForm?.controls['gender'] || null;
   }
   public get password(): GetCommonFormControl {
     return this.passwordForm?.controls['password'] || null;
@@ -90,7 +91,7 @@ export class RegistrationFormComponent implements OnInit {
     'complete-view'
   > = signal('registration-form');
 
-  public form: FormGroup<RegistrationForm> | undefined;
+  public registrationForm: FormGroup<RegistrationForm> | undefined;
   public passwordForm: FormGroup<PasswordForm> | undefined;
   public phoneMask: MaskitoOptions = MASKITO_DEFAULT_OPTIONS;
   public dateMask: MaskitoOptions = MASKITO_DEFAULT_OPTIONS;
@@ -133,7 +134,7 @@ export class RegistrationFormComponent implements OnInit {
             break;
           case 'not':
             this.state.set('registration-form');
-            this.initForm()
+            this.initForm();
             break;
           case 'done':
             this.router.navigate(['']);
@@ -146,7 +147,7 @@ export class RegistrationFormComponent implements OnInit {
 
   private initForm(): void {
 
-    this.form = new FormGroup<RegistrationForm>({
+    this.registrationForm = new FormGroup<RegistrationForm>({
       email: new FormControl(null),
       phone: new FormControl(null),
       name: new FormControl(null),
@@ -159,7 +160,14 @@ export class RegistrationFormComponent implements OnInit {
     this.passwordForm = new FormGroup<PasswordForm>({
       password: new FormControl(null),
       replayPassword: new FormControl(null),
-    });
+    },
+      {
+        validators: matchValidator(
+          'password',
+          'replayPassword'
+        )
+      }
+      );
 
     this.initMask();
   }
@@ -188,8 +196,11 @@ export class RegistrationFormComponent implements OnInit {
       this.state.set('password-form');
     } else {
       for (const error of errorsFields) {
-        const fieldName = error[0]
-        this.getControl(fieldName)?.setErrors({error: this.errorMessages[fieldName]})
+        const fieldName = error[0];
+
+        this.setErrorsRegistrationForm(fieldName, {
+          error: this.errorMessages[fieldName]
+        })
       }
 
       this.cdr.detectChanges();
@@ -225,14 +236,65 @@ export class RegistrationFormComponent implements OnInit {
     return false;
   }
 
-  // private validateValues(value, type): void {
-  //   email
-  //   phone
-  //   name
-  //   fullName
-  //   dateIssue
-  // }
-  public getControl(name: keyof RegistrationForm): GetCommonFormControl {
-    return this.form?.controls[name] || null;
+  public registration() {
+    this.setPasswordFormRegistration();
+
+    if (this.registrationForm?.valid) {
+      this.registration$().pipe(
+        takeUntil(this.destroy$),
+      )
+        .subscribe({
+          next: (data) => {
+            console.log('data', data);
+          },
+          error: (error: RegistrationError) => {
+
+            if (error.error.message === RegistrationErrors.BusyEmail) {
+              this.state.set('registration-form');
+
+              this.cdr.detectChanges();
+              this.setErrorsRegistrationForm('email',
+                {
+                error: 'Пользователь c такой почтой уже существует',
+                })
+            }
+
+            if (error.error.message === RegistrationErrors.BusyPhone) {
+              this.state.set('registration-form');
+
+              this.cdr.detectChanges();
+              this.setErrorsRegistrationForm('phone',
+                {
+                  error: 'Пользователь c таким номером телефона уже существует',
+                })
+            }
+          }
+    })
+    }
+  }
+
+  private setPasswordFormRegistration() {
+    if (this.passwordForm?.valid) {
+      const password = this.password?.value
+
+      if (typeof password === 'string') {
+        this.getControlRegistrationForm('password')?.setValue(
+          password
+        )
+      }
+    }
+  }
+
+  private registration$(): Observable<any> {
+    const body = <RegistrationBody>{...this.registrationForm?.value};
+    return this.userService.createUser$(body);
+  }
+
+  private setErrorsRegistrationForm(name: keyof RegistrationForm, errors: ValidationErrors): void {
+    this.getControlRegistrationForm(name)?.setErrors(errors);
+  }
+
+  public getControlRegistrationForm(name: keyof RegistrationForm): GetCommonFormControl {
+    return this.registrationForm?.controls[name] || null;
   }
 }

@@ -50,7 +50,7 @@ export class TokenService {
 
   async removeAll(): Promise<null> {
     if (this.configService.get('MODE') === 'DEV') {
-      await this.tokenModel.deleteMany();
+      await this.tokenModel.collection.drop();
       return null;
     }
   }

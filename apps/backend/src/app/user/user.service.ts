@@ -55,8 +55,7 @@ export class UserService {
       const user = new UserDto(creatUser);
       return await this.buildUserAuthData(user);
     } else {
-      const errorContactType = searchByPhone ? `c телефоном ${dto.phone}` : `c почтой ${dto.email}`;
-      throw new ValidationException(`Пользователь ${errorContactType} уже зарегестрирован`)
+      throw new ValidationException(searchByPhone ? 'BUSY_PHONE' : 'BUSY_EMAIL')
     }
   }
 
@@ -76,7 +75,7 @@ export class UserService {
       if (!(await this.loginPasswordEquals(user, password))) {
         throw new ValidationException(`BAD_PASSWORD`)
       } else if (user.isActivated) {
-        return this.buildUserAuthData(new UserDto(user));
+        return this.buildUserAuthData(new UserDto(user), true);
       } else {
         throw new ValidationException(`USER_NOT_ACTIVATED`);
       }
@@ -115,13 +114,13 @@ export class UserService {
     }
   }
 
-  private async buildUserAuthData(user: UserDto) {
+  private async buildUserAuthData(user: UserDto, authData = false) {
     const tokens = this.tokenService.generateTokens({...user});
     await this.tokenService.saveToken(user.id, tokens);
-    return {
+    return authData ? {
       ...user,
       ...tokens
-    }
+    } : {...user}
   }
 
   private async loginPasswordEquals(user: User, password: string): Promise<boolean> {
@@ -178,7 +177,7 @@ export class UserService {
   async deleteAllUsers(): Promise<null> {
     if (this.configService.get('MODE') === 'DEV') {
       await this.tokenService.removeAll();
-      await this.userModel.deleteMany();
+      await this.userModel.collection.drop();
     }
     return null;
   }

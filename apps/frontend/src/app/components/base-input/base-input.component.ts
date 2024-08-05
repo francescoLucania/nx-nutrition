@@ -53,6 +53,7 @@ export class BaseInputComponent implements ControlValueAccessor, OnInit {
   @Input() public type = 'text';
 
   @Input() public set setError(value: ValidationErrors | null | undefined) {
+    console.log(this.formControlName, value)
     this.error.set(value);
   }
 

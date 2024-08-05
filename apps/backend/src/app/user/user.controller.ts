@@ -10,7 +10,6 @@ import {
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
-import { UserLoginDto } from './dto/user-login.dto';
 import { ValidationPipe } from '../pipes/validation/validation';
 import { UserDto } from './dto/user-public.dto';
 import { AuthGuard } from '../guards/auth/auth';
@@ -34,12 +33,11 @@ export class UserController {
     @Body() dto: CreateUserDto,
     @Response() response,
   ) {
-    console.log('controller dto', dto);
     // const picture = avatar?.avatar[0];
     const user = await this.userService.create({
       ...dto,
     });
-    return this.setRefreshTokenToken(response, user).send(user);
+    return response.send(user);
   }
 
   @UsePipes(ValidationPipe)
@@ -89,7 +87,7 @@ export class UserController {
     ) {
     const user = await this.userService.login(body);
 
-    this.setRefreshTokenToken(response, user).send(user);
+    this.setRefreshToken(response, user).send(user);
   }
 
   @Get('/logout')
@@ -108,7 +106,7 @@ export class UserController {
     @Response() response,
     ) {
     const user = await this.userService.refresh(request.cookies.refreshToken)
-    this.setRefreshTokenToken(response, user).send(user);
+    this.setRefreshToken(response, user).send(user);
   }
 
   @UseGuards(AuthGuard)
@@ -125,7 +123,7 @@ export class UserController {
     response.send(userData);
   }
 
-  private setRefreshTokenToken(response: any, user: UserDto): any {
+  private setRefreshToken(response: any, user: UserDto): any {
     return response.cookie('refreshToken', user.refreshToken, {maxAge: 30 * 24 * 60 * 100, httpOnly: true});
   }
 

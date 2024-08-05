@@ -19,7 +19,7 @@
 
 
 <ng-template #registrationFormTemplate>
-  <form class="registration-form" *ngIf="form" [formGroup]="form">
+  <form class="registration-form" *ngIf="registrationForm" [formGroup]="registrationForm">
     <div>
       <nutrition-base-input
         *ngIf="name"
@@ -122,7 +122,7 @@
         [fullWidth]="true"
         (click)="continue()"
       >
-        Войти
+        Продолжить
       </neo-ui-button>
     </div>
   </form>
@@ -134,7 +134,6 @@
       <nutrition-base-input
         *ngIf="password"
         [type]="'password'"
-        [maskitoOptions]="phoneMask"
         [size]="'large'"
         [setError]="password.errors"
         [formControlName]="'password'"
@@ -148,14 +147,27 @@
       <nutrition-base-input
         *ngIf="replayPassword"
         [type]="'password'"
-        [maskitoOptions]="phoneMask"
         [size]="'large'"
-        [setError]="replayPassword.errors"
         [formControlName]="'replayPassword'"
         [placeholder]="'Повторите пароль'"
         [autocomplete]="true"
         [ariaLabel]="'Повторите пароль'"
       ></nutrition-base-input>
+    </div>
+
+    <div class="mt-4 text-error" *ngIf="passwordForm?.dirty && passwordForm?.errors?.notMatch">
+      Пароли не совпадают
+    </div>
+    <div class="mt-24">
+      <neo-ui-button
+        [size]="'large'"
+        [buttonType]="'submit'"
+        [fullWidth]="true"
+        [disabled]="passwordForm?.errors?.notMatch === true"
+        (click)="registration()"
+      >
+        Зарегистрироваться
+      </neo-ui-button>
     </div>
   </form>
 </ng-template>
