@@ -32,3 +32,9 @@ export type RegistrationError = HttpErrorResponse & {
     message: RegistrationErrors
   }
 }
+
+export type CreateResponse = {
+  email: string;
+  id: string;
+  isActivated: boolean
+}

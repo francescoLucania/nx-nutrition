@@ -4,7 +4,7 @@ import { HttpRequest } from '@angular/common/http';
 import { ApiService } from '../api/api.service';
 import { UserAuthState } from '../../models/user/user.modal';
 import { BrowserService } from 'ngx-neo-ui';
-import { RegistrationBody, UserProfile } from '@nx-nutrition-models';
+import { CreateResponse, RegistrationBody, UserProfile } from '@nx-nutrition-models';
 
 @Injectable({
   providedIn: 'root'
@@ -93,7 +93,7 @@ export class UserService {
     return this._userProfileData$
   }
 
-  public createUser$(body: RegistrationBody): Observable<any> {
-    return this.apiService.postRequest('user/create', body);
+  public createUser$(body: RegistrationBody): Observable<CreateResponse> {
+    return this.apiService.postRequest<RegistrationBody, CreateResponse>('user/create', body);
   }
 }

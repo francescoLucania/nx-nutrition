@@ -16,7 +16,12 @@ import {
   ModalService,
   RadioStandaloneComponent,
 } from 'ngx-neo-ui';
-import { RegistrationBody, RegistrationError, RegistrationErrors } from '@nx-nutrition-models';
+import {
+  CreateResponse,
+  RegistrationBody,
+  RegistrationError,
+  RegistrationErrors
+} from '@nx-nutrition-models';
 import { Router } from '@angular/router';
 import { ThrobberComponent } from '../throbber/throbber.component';
 import { JsonPipe, NgIf, NgTemplateOutlet } from '@angular/common';
@@ -55,6 +60,7 @@ type PasswordForm = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RegistrationFormComponent implements OnInit {
+  private emailForActivation: string | undefined = undefined;
 
   public get email(): GetCommonFormControl {
     return this.registrationForm?.controls['email'] || null;
@@ -192,7 +198,7 @@ export class RegistrationFormComponent implements OnInit {
     const errorsFields = [...validationValues.entries()]
       .filter(item => !item[1]);
 
-    if (!errorsFields.length) {
+    if (!errorsFields.length && this.registrationForm?.valid) {
       this.state.set('password-form');
     } else {
       for (const error of errorsFields) {
@@ -233,6 +239,7 @@ export class RegistrationFormComponent implements OnInit {
       const result = this.validationService.formatLogin(contact, [type])
       return result ? result.idType === type : false;
     }
+
     return false;
   }
 
@@ -245,32 +252,42 @@ export class RegistrationFormComponent implements OnInit {
       )
         .subscribe({
           next: (data) => {
-            console.log('data', data);
+            this.emailForActivation = data.email
+            this.state.set('complete-view')
           },
           error: (error: RegistrationError) => {
-
-            if (error.error.message === RegistrationErrors.BusyEmail) {
-              this.state.set('registration-form');
-
-              this.cdr.detectChanges();
-              this.setErrorsRegistrationForm('email',
-                {
-                error: 'Пользователь c такой почтой уже существует',
-                })
-            }
-
-            if (error.error.message === RegistrationErrors.BusyPhone) {
-              this.state.set('registration-form');
-
-              this.cdr.detectChanges();
-              this.setErrorsRegistrationForm('phone',
-                {
-                  error: 'Пользователь c таким номером телефона уже существует',
-                })
+            switch (error.error.message) {
+              case RegistrationErrors.BusyEmail:
+                this.registrationError('email',
+                  {
+                    error: 'Пользователь c такой почтой уже существует',
+                  })
+                break;
+              case RegistrationErrors.BusyPhone:
+                this.registrationError('phone',
+                  {
+                    error: 'Пользователь c таким номером телефона уже существует',
+                  })
+                break;
+              case RegistrationErrors.NotRussiaPhone:
+                this.registrationError('phone',
+                  {
+                    error: 'Нужно ввести номер российского мобильного оператора',
+                  })
             }
           }
     })
+    } else {
+      this.state.set('registration-form');
     }
+  }
+
+  private registrationError(name: keyof RegistrationForm, errors: ValidationErrors) {
+    this.state.set('registration-form');
+
+    this.cdr.detectChanges();
+    this.setErrorsRegistrationForm(name,
+      errors)
   }
 
   private setPasswordFormRegistration() {
@@ -285,7 +302,7 @@ export class RegistrationFormComponent implements OnInit {
     }
   }
 
-  private registration$(): Observable<any> {
+  private registration$() {
     const body = <RegistrationBody>{...this.registrationForm?.value};
     return this.userService.createUser$(body);
   }

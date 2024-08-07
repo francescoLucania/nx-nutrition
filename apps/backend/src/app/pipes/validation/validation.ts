@@ -17,11 +17,15 @@ export class ValidationPipe implements PipeTransform<any> {
 
         return {
           name: error.property,
-          message: Object.values(error.constraints),
+          message: Object.values(error.constraints)[0],
         }
       })
-      console.log('errors', JSON.stringify(errors));
-      throw new ValidationException(messages)
+
+      if (messages.length === 1) {
+        throw new ValidationException(messages[0])
+      } else {
+        throw new ValidationException(messages)
+      }
     }
     return value;
   }

@@ -1,20 +1,33 @@
 @if (!isBrowser) {
   <ng-template [ngTemplateOutlet]="registrationFormTemplate"></ng-template>
 } @else {
-  @switch (state()) {
-    @case ('processing') {
-      <nutrition-throbber></nutrition-throbber>
+
+  <h1 class="heading-h1 text-center">
+    @if (state() !== 'complete-view') {
+      Регистрация
+    } @else {
+      <h4 class="heading-h1">
+        Спасибо за регистрацию!
+      </h4>
     }
-    @case ('registration-form') {
-      <ng-template [ngTemplateOutlet]="registrationFormTemplate"></ng-template>
+
+  </h1>
+  <div class="mt-48 mt-md-64">
+    @switch (state()) {
+      @case ('processing') {
+        <nutrition-throbber></nutrition-throbber>
+      }
+      @case ('registration-form') {
+        <ng-template [ngTemplateOutlet]="registrationFormTemplate"></ng-template>
+      }
+      @case ('password-form') {
+        <ng-template [ngTemplateOutlet]="passwordFormTemplate"></ng-template>
+      }
+      @case ('complete-view') {
+        <ng-template [ngTemplateOutlet]="completeView"></ng-template>
+      }
     }
-    @case ('password-form') {
-      <ng-template [ngTemplateOutlet]="passwordFormTemplate"></ng-template>
-    }
-    @case ('complete-view') {
-      <ng-template [ngTemplateOutlet]="completeView"></ng-template>
-    }
-  }
+  </div>
 }
 
 
@@ -173,7 +186,12 @@
 </ng-template>
 
 <ng-template #completeView>
-  completeView
+  <div class="text-center">
+    <div class="mt-24">
+      Для возможности пользоваться личным кабинетом нужно подтвердить адрес электронной почты.
+      Ссылка для подтверждения была отправлена на адрес: {{ email | json }}
+    </div>
+  </div>
 </ng-template>
 
 
