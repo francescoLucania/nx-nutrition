@@ -6,12 +6,10 @@
   ariaLabel
   ) {
 
-  <ng-container *ngIf="error()">
-    @for (item of error() | keyvalue; track item) {
-      <div class="mb-4 text-error">
-        {{item.value}}
-      </div>
-    }
+  <ng-container *ngIf="error()?.error">
+    <div class="mb-4 text-error">
+      {{error()?.error}}
+    </div>
   </ng-container>
 
   @if (maskitoOptions) {

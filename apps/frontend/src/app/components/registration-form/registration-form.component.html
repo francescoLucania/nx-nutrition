@@ -12,7 +12,7 @@
     }
 
   </h1>
-  <div class="mt-48 mt-md-64">
+  <div class="mt-48">
     @switch (state()) {
       @case ('processing') {
         <nutrition-throbber></nutrition-throbber>
@@ -189,7 +189,7 @@
   <div class="text-center">
     <div class="mt-24">
       Для возможности пользоваться личным кабинетом нужно подтвердить адрес электронной почты.
-      Ссылка для подтверждения была отправлена на адрес: {{ email | json }}
+      Ссылка для подтверждения была отправлена на адрес: <b class="color-brand">{{ email?.value }}</b>
     </div>
   </div>
 </ng-template>

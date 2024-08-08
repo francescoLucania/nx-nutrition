@@ -6,7 +6,7 @@ import {
   signal,
   WritableSignal
 } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { LoginTypes, UserService, ValidationService } from '../../services';
 import { Observable, takeUntil } from 'rxjs';
 import {
@@ -31,6 +31,7 @@ import { maskitoDateOptionsGenerator } from '@maskito/kit';
 import { CommonFormControl, GetCommonFormControl } from '../../models/forms/form-control';
 import { BaseInputComponent } from '../base-input/base-input.component';
 import { matchValidator } from '../../validators';
+import { minLength } from 'class-validator';
 
 type RegistrationForm = Record<keyof RegistrationBody, CommonFormControl>;
 type PasswordForm = {
@@ -164,7 +165,10 @@ export class RegistrationFormComponent implements OnInit {
     });
 
     this.passwordForm = new FormGroup<PasswordForm>({
-      password: new FormControl(null),
+      password: new FormControl(null, [
+        Validators.minLength(8),
+        Validators.maxLength(16),
+      ]),
       replayPassword: new FormControl(null),
     },
       {
@@ -244,41 +248,64 @@ export class RegistrationFormComponent implements OnInit {
   }
 
   public registration() {
-    this.setPasswordFormRegistration();
 
-    if (this.registrationForm?.valid) {
-      this.registration$().pipe(
-        takeUntil(this.destroy$),
-      )
-        .subscribe({
-          next: (data) => {
-            this.emailForActivation = data.email
-            this.state.set('complete-view')
-          },
-          error: (error: RegistrationError) => {
-            switch (error.error.message) {
-              case RegistrationErrors.BusyEmail:
-                this.registrationError('email',
-                  {
-                    error: 'Пользователь c такой почтой уже существует',
-                  })
-                break;
-              case RegistrationErrors.BusyPhone:
-                this.registrationError('phone',
-                  {
-                    error: 'Пользователь c таким номером телефона уже существует',
-                  })
-                break;
-              case RegistrationErrors.NotRussiaPhone:
-                this.registrationError('phone',
-                  {
-                    error: 'Нужно ввести номер российского мобильного оператора',
-                  })
+    if (this.validPasswordForm()) {
+      this.setPasswordFormRegistration();
+
+      if (this.registrationForm?.valid) {
+        this.registration$().pipe(
+          takeUntil(this.destroy$),
+        )
+          .subscribe({
+            next: (data) => {
+              this.emailForActivation = data.email
+              this.state.set('complete-view')
+            },
+            error: (error: RegistrationError) => {
+              this.handleRegistrationError(error);
             }
-          }
-    })
-    } else {
-      this.state.set('registration-form');
+          })
+      } else {
+        this.state.set('registration-form');
+      }
+    }
+  }
+
+  private validPasswordForm() {
+    if (
+      this.password?.errors?.minlength ||
+      this.password?.errors?.maxlength) {
+      this.password.setErrors({
+        error: 'Пароль должен содержать не менее 8 и не более 16 символов '
+      });
+
+      this.cdr.detectChanges();
+
+      return false;
+    }
+
+    return true;
+  }
+
+  private handleRegistrationError(error: RegistrationError) {
+    switch (error.error.message) {
+      case RegistrationErrors.BusyEmail:
+        this.registrationError('email',
+          {
+            error: 'Пользователь c такой почтой уже существует',
+          })
+        break;
+      case RegistrationErrors.BusyPhone:
+        this.registrationError('phone',
+          {
+            error: 'Пользователь c таким номером телефона уже существует',
+          })
+        break;
+      case RegistrationErrors.NotRussiaPhone:
+        this.registrationError('phone',
+          {
+            error: 'Нужно ввести номер российского мобильного оператора',
+          })
     }
   }
 
@@ -314,4 +341,5 @@ export class RegistrationFormComponent implements OnInit {
   public getControlRegistrationForm(name: keyof RegistrationForm): GetCommonFormControl {
     return this.registrationForm?.controls[name] || null;
   }
+
 }
