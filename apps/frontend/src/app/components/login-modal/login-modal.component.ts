@@ -8,7 +8,7 @@ import {
 } from 'ngx-neo-ui';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { JsonPipe, NgIf } from '@angular/common';
-import { UserService, ValidationService } from '../../services';
+import { AuthService, UserService, ValidationService } from '../../services';
 import { HttpErrorResponse } from '@angular/common/http';
 import { finalize, takeUntil } from 'rxjs';
 import { Router, RouterLink } from '@angular/router';
@@ -55,7 +55,7 @@ export class LoginModalComponent implements OnInit {
   constructor(
     private destroy$: DestroyService,
     private browserService: BrowserService,
-    private userService: UserService,
+    private authService: AuthService,
     private modalService: ModalService,
     private validationService: ValidationService,
     private router: Router,
@@ -69,7 +69,7 @@ export class LoginModalComponent implements OnInit {
 
   private initState(): void {
     this.isBrowser.set(this.browserService.isBrowser);
-    this.userService.isLoggedIn$
+    this.authService.isLoggedIn$
       .pipe(
         takeUntil(this.destroy$),
       )
@@ -154,7 +154,7 @@ export class LoginModalComponent implements OnInit {
   private userAuth$(
     body: LoginBody,
   ) {
-    return this.userService.auth$(body)
+    return this.authService.auth$(body)
   }
 
   public closeModal() {

@@ -7,7 +7,7 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import { UserService } from './services';
 
 export function initializerFactory(userService: UserService) {
-  return () => userService.getUserProfileData$().subscribe();
+  return () => userService.getUserData$().subscribe();
 }
 
 

@@ -1,14 +1,14 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component, effect,
+  Component,
   OnInit,
   signal,
   WritableSignal
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
-import { LoginTypes, UserService, ValidationService } from '../../services';
-import { Observable, takeUntil } from 'rxjs';
+import { AuthService, LoginTypes, UserService, ValidationService } from '../../services';
+import { takeUntil } from 'rxjs';
 import {
   BrowserService, ButtonStandaloneComponent,
   DestroyService,
@@ -17,7 +17,6 @@ import {
   RadioStandaloneComponent,
 } from 'ngx-neo-ui';
 import {
-  CreateResponse,
   RegistrationBody,
   RegistrationError,
   RegistrationErrors
@@ -114,6 +113,7 @@ export class RegistrationFormComponent implements OnInit {
 
   constructor(
     private userService: UserService,
+    private authService: AuthService,
     private browserService: BrowserService,
     private cdr: ChangeDetectorRef,
     private destroy$: DestroyService,
@@ -130,7 +130,7 @@ export class RegistrationFormComponent implements OnInit {
 
   private initState(): void {
     this.isBrowser = this.browserService.isBrowser;
-    this.userService.isLoggedIn$
+    this.authService.isLoggedIn$
       .pipe(
         takeUntil(this.destroy$),
       )

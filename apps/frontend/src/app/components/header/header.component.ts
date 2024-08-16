@@ -1,13 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { ButtonStandaloneComponent, ModalService, NavigateListComponent } from 'ngx-neo-ui';
 import { INavigateList } from 'ngx-neo-ui/lib/components/navigate-list/models/navigate';
-import { UserService } from '../../services';
+import { AuthService } from '../../services';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { LoginModalComponent } from '../login-modal/login-modal.component';
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Observable } from 'rxjs';
-import { UserAuthState } from '../../models/user/user.modal';
 
 @Component({
   selector: 'nutrition-header',
@@ -51,7 +49,7 @@ export class HeaderComponent {
     },
 
   ]
-  public isLoggedIn$ = this.userService.isLoggedIn$;
+  public isLoggedIn$ = this.authService.isLoggedIn$;
 
   public isLoggedIn = toSignal(
     this.isLoggedIn$,
@@ -60,7 +58,7 @@ export class HeaderComponent {
   );
 
   constructor(
-    private userService: UserService,
+    private authService: AuthService,
     private modalService: ModalService,
     private cdr: ChangeDetectorRef,
     ) {

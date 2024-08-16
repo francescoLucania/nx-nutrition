@@ -1,11 +1,12 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { UserService } from '../../services';
+import { AuthService, UserService } from '../../services';
 import { catchError, switchMap, tap, throwError } from 'rxjs';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const authService = inject(AuthService)
   const userService = inject(UserService)
-  return next(userService.buildRequest(req))
+  return next(authService.buildRequest(req))
     .pipe(
       catchError((error)=> {
         if (
@@ -13,9 +14,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           !req.url.includes('user/login') &&
           error.status === 401
         ) {
-          return userService.refreshToken$().pipe(
+          return authService.refreshToken$().pipe(
             switchMap(() => {
-              return next(userService.buildRequest(req));
+              return next(authService.buildRequest(req));
             }),
           );
         }
@@ -24,8 +25,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       tap((response: any) => {
         const accessToken = response?.body?.accessToken
         if (accessToken) {
-          userService.setAccessToken = accessToken;
-          userService.getUserProfileData$(true);
+          authService.setAccessToken = accessToken;
+          userService.getUserData$(true);
         }
       })
     );

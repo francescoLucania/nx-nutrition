@@ -84,7 +84,7 @@ export class UserService {
     }
   }
 
-  public async getUserProfileData(token: string) {
+  public async getUserData(token: string) {
     return this.buildUserProfileData(
       await this.getUserByToken('ACCESS_TOKEN', token)
     );
