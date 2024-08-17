@@ -3,6 +3,7 @@ import { ButtonStandaloneComponent, InputStandaloneComponent } from 'ngx-neo-ui'
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { UserService } from '../../services';
+import { RouterLink } from '@angular/router';
 
 type LoginForm = {
   login: AbstractControl<string>,
@@ -16,7 +17,8 @@ type LoginForm = {
     InputStandaloneComponent,
     ButtonStandaloneComponent,
     ReactiveFormsModule,
-    NgIf
+    NgIf,
+    RouterLink
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
