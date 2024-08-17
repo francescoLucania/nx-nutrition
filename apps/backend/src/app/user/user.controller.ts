@@ -115,11 +115,8 @@ export class UserController {
     @Req() request,
     @Response() response,
   ) {
-    console.log('getUserData response', request.headers)
     const token = request?.headers['authorization']?.split(' ')?.[1];
-    console.log('token', token);
     const userData = await this.userService.getUserData(token);
-    console.log('userData', userData);
     response.send(userData);
   }
 

@@ -230,9 +230,10 @@ export class RegistrationFormComponent implements OnInit {
     return values;
   }
 
-  private validationTextField(value: GetCommonFormControl): boolean {
-    if (value) {
-      return Boolean(value?.value);
+  private validationTextField(control: GetCommonFormControl): boolean {
+    const value = control?.value;
+    if (value && value.length > 1) {
+      return Boolean(value);
     }
 
     return false;

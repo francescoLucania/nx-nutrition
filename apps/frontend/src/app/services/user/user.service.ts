@@ -14,6 +14,10 @@ export class UserService {
 
   private _userProfileData$: Observable<UserProfile> | undefined;
 
+  private set logoutUser(value: Observable<UserProfile> | undefined) {
+    this._userProfileData$ = undefined;
+  }
+
   constructor(
     private browserService: BrowserService,
     private apiService: ApiService,
@@ -33,5 +37,15 @@ export class UserService {
       );
     }
     return this._userProfileData$
+  }
+
+  public userLogout$(): Observable<any> {
+    return this.authService.logout$()
+      .pipe(
+        tap(() => {
+          this.authService.updateIsLoggedIn = 'not';
+          this.logoutUser = undefined;
+        }),
+    );
   }
 }

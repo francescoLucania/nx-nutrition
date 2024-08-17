@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { UserService } from '../../services';
+import { AuthService, UserService } from '../../services';
 import { catchError, Observable, of, switchMap, tap } from 'rxjs';
 import { AsyncPipe, JsonPipe, NgIf } from '@angular/common';
 import { response } from 'express';
+import { ButtonStandaloneComponent } from 'ngx-neo-ui';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'nutrition-profile',
@@ -10,7 +12,8 @@ import { response } from 'express';
   imports: [
     AsyncPipe,
     JsonPipe,
-    NgIf
+    NgIf,
+    ButtonStandaloneComponent
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
@@ -19,10 +22,20 @@ import { response } from 'express';
 export class ProfileComponent implements OnInit {
 
   public userData$: Observable<any> | undefined
-  constructor(private userService: UserService) {
+  constructor(
+    private userService: UserService,
+    private router: Router,
+) {
   }
 
   public ngOnInit() {
     this.userData$ = this.userService.getUserData$()
+  }
+
+  public logout() {
+    this.userService.userLogout$().subscribe({
+      next: () => this.router.navigate(['']),
+      error: () => console.error('Не удалось выйти')
+    });
   }
 }

@@ -5,6 +5,8 @@ import { UserProfile } from '@nx-nutrition-models';
 import { BrowserService } from 'ngx-neo-ui';
 import { ApiService } from '../api/api.service';
 import { HttpRequest } from '@angular/common/http';
+import { UserService } from '../user/user.service';
+import { Logout } from '../../../../../../models/user/logout';
 
 @Injectable({
   providedIn: 'root'
@@ -74,9 +76,13 @@ export class AuthService {
   public auth$<Body>(body: Body): Observable<any> {
     return this.apiService.postRequest('user/login', body)
       .pipe(
-        tap((response) => {
+        tap(() => {
           this.updateIsLoggedIn = 'done';
         }),
       );
+  }
+
+  public logout$(): Observable<Logout> {
+    return this.apiService.getRequest('user/logout');
   }
 }

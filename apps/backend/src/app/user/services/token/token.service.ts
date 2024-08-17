@@ -25,12 +25,9 @@ export class TokenService {
   public async saveToken(userId, tokens) {
     const tokenData = await this.tokenModel.findOne({user: userId})
 
-    console.log('tokens', tokens)
-
     if (tokenData) {
-      console.log('update token tokenData', tokenData)
       tokenData.refreshToken = tokens.refreshToken;
-      // console.log('tokens.refreshToken', tokens.refreshToken)
+
       return tokenData.save();
     }
     return await this.tokenModel.create({ user: userId, refreshToken: tokens.refreshToken });

@@ -143,8 +143,8 @@ export class UserService {
   async activate(link: string): Promise<User> {
     const activatedCandidate = await this.userModel.findOne({activationLink: link});
     if (activatedCandidate) {
-      activatedCandidate.isActivated = true;
-      activatedCandidate.activationLink = null;
+      activatedCandidate['isActivated'] = true;
+      activatedCandidate['activationLink'] = null;
     } else {
       throw new Error('INCORRECT_LINK')
     }

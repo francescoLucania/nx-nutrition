@@ -22,20 +22,25 @@ export class MailService {
 
   this.transporter = nodemailer.createTransport(configOptions)
   }
+
+
   sendActivationMail(to, link) {
     console.log('to', to)
     console.log('link', link)
     // todo тестируем постманом
-    // this.transporter.sendMail({
-    //   to,
-    //   from: this.configService.get('SMTP_USER'),
-    //   subject: `Активация личного кабинета на сайте ${this.configService.get('DOMAIN')}`,
-    //   text: '',
-    //   html: `<div><h1>Для активации личного кабинета перейдите по ссылке:</h1>
-    //           <div style="margin-top: 16px">Ссылка для активации: <a href="${link}" target="_blank">${link}</a> </div>
-    //         </div>
-    //         `
-    // })
+
+    if (!this.configService.get('MAIL_SERVICE_TEST')) {
+      this.transporter.sendMail({
+        to,
+        from: this.configService.get('SMTP_USER'),
+        subject: `Активация личного кабинета на сайте ${this.configService.get('DOMAIN')}`,
+        text: '',
+        html: `<div><h1>Для активации личного кабинета перейдите по ссылке:</h1>
+              <div style="margin-top: 16px">Ссылка для активации: <a href="${link}" target="_blank">${link}</a> </div>
+            </div>
+            `
+      })
+    }
   }
 
 }
