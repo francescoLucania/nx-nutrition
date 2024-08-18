@@ -81,6 +81,10 @@ export class AuthService {
   }
 
   public logout$(): Observable<Logout> {
-    return this.apiService.getRequest('user/logout');
+    return this.apiService.getRequest<Logout>('user/logout').pipe(
+      tap(() => {
+        this.updateIsLoggedIn = 'not';
+      })
+    );
   }
 }

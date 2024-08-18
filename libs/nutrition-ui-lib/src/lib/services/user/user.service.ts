@@ -29,7 +29,7 @@ export class UserService {
   }
 
   public getUserData$(force = false): Observable<UserProfile | null> {
-    console.log('getUserData$ this._userProfileData$.getValue()', !this._userProfileData$.getValue());
+
     if (force || !this._userProfileData$.getValue()) {
       this.authService.updateIsLoggedIn = 'processing';
       console.log('2', this._userProfileData$.getValue());
@@ -39,6 +39,7 @@ export class UserService {
           return throwError(err);
         }),
         tap((response) => {
+          this.authService.updateIsLoggedIn = 'done';
           this._userProfileData$?.next(response);
         })
       );

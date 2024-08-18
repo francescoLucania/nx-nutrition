@@ -5,7 +5,7 @@
   "scripts": {
     "update": "nx migrate latest",
     "serve backend": "nx serve backend",
-    "serve frontend-profile": "nx serve frontend-profile",
+    "serve frontend-profile": "nx serve frontend-profile --force",
     "serve frontend": "nx serve frontend --force",
     "build frontend": "nx build backend",
     "build backend": "nx build backend --mode production",

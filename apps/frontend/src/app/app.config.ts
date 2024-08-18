@@ -1,4 +1,9 @@
-import { APP_INITIALIZER, ApplicationConfig } from '@angular/core';
+import {
+  APP_INITIALIZER,
+  ApplicationConfig,
+  provideExperimentalZonelessChangeDetection,
+  provideZoneChangeDetection
+} from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { appRoutes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
@@ -33,6 +38,9 @@ export const appConfig: ApplicationConfig = {
         authInterceptor,
       ])
     ),
+    // TODO: гидрация без zone.js может доставлять проблемы
+    provideExperimentalZonelessChangeDetection(),
+    // provideZoneChangeDetection({ eventCoalescing: true }),
     provideClientHydration(),
     provideRouter(appRoutes)],
 };

@@ -88,7 +88,7 @@ export class LoginModalComponent implements OnInit {
             this.modalService.close();
             break;
         }
-        this.cdr.detectChanges()
+        this.cdr.detectChanges();
       })
   }
 
@@ -131,7 +131,6 @@ export class LoginModalComponent implements OnInit {
 
       this.userAuth$(body).pipe(
         switchMap(() => this.userService.getUserData$()),
-        finalize(() => this.cdr.detectChanges()),
         takeUntil(this.destroy$),
       )
         .subscribe(
@@ -149,6 +148,8 @@ export class LoginModalComponent implements OnInit {
                   error: 'Учетная запись не активирована, на указанной при регистрации почте должна быть ссылка для активации'
                 })
               }
+
+              this.cdr.detectChanges();
             }
           }
         )
