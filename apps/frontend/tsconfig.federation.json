@@ -12,9 +12,7 @@
     "server.ts"
   ],
   "include": [
-    "src/**/*.d.ts",
-    "../../models/index.ts",
-    "../../libs/nutrition-ui-lib/src/index.ts"
+    "src/**/*.d.ts"
   ],
   "exclude": [
     "jest.config.ts",

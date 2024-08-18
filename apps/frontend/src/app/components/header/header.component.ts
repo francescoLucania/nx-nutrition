@@ -6,6 +6,7 @@ import { LoginModalComponent } from '../login-modal/login-modal.component';
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AuthService } from '@nx-nutrition/nutrition-ui-lib';
+import { ThrobberComponent } from '../throbber/throbber.component';
 
 @Component({
   selector: 'nutrition-header',
@@ -15,7 +16,8 @@ import { AuthService } from '@nx-nutrition/nutrition-ui-lib';
     ButtonStandaloneComponent,
     NgIf,
     AsyncPipe,
-    RouterLink
+    RouterLink,
+    ThrobberComponent
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
@@ -53,7 +55,7 @@ export class HeaderComponent {
 
   public isLoggedIn = toSignal(
     this.isLoggedIn$,
-    { manualCleanup: true,
+    {
       requireSync: true }
   );
 
