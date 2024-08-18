@@ -1,7 +1,7 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { AuthService, UserService } from '../../services';
 import { catchError, switchMap, tap, throwError } from 'rxjs';
+import { AuthService, UserService } from '@nx-nutrition/nutrition-ui-lib';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService)
@@ -23,10 +23,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         return throwError(() => error);
       }),
       tap((response: any) => {
-        const accessToken = response?.body?.accessToken
+        const accessToken = response?.body?.accessToken;
         if (accessToken) {
           authService.setAccessToken = accessToken;
-          userService.getUserData$(true);
         }
       })
     );

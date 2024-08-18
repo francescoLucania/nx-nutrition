@@ -14,7 +14,6 @@ import { ValidationPipe } from '../pipes/validation/validation';
 import { UserDto } from './dto/user-public.dto';
 import { AuthGuard } from '../guards/auth/auth';
 import { LoginBody } from '@nx-nutrition-models';
-// import { AuthGuard } from '../guards/auth/auth';
 
 
 @Controller('/user')
@@ -96,7 +95,7 @@ export class UserController {
     @Response() response,
     ) {
     await this.userService.logout(request.cookies.refreshToken);
-    response.clearCookie('refreshToken')
+    response.clearCookie('refreshToken');
     return response.send({action: 'LOGOUT'});
   }
 
@@ -105,10 +104,11 @@ export class UserController {
     @Req() request,
     @Response() response,
     ) {
-    const user = await this.userService.refresh(request.cookies.refreshToken)
+    const user = await this.userService.refresh(request.cookies.refreshToken);
+
     this.setRefreshToken(response, user).send(user);
   }
-
+  1231231232
   @UseGuards(AuthGuard)
   @Get('/getUserData')
   public async  getUserData(
@@ -121,7 +121,11 @@ export class UserController {
   }
 
   private setRefreshToken(response: any, user: UserDto): any {
-    return response.cookie('refreshToken', user.refreshToken, {maxAge: 30 * 24 * 60 * 100, httpOnly: true});
+    if (user?.refreshToken) {
+      return response.cookie('refreshToken', user.refreshToken, {maxAge: 30 * 24 * 60 * 100, httpOnly: true});
+    }
+
+    return response;
   }
 
   @Get('/deleteAllUsers')

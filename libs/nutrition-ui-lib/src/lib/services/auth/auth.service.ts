@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, EMPTY, Observable, tap } from 'rxjs';
-import { UserAuthState } from '../../models/user/user.modal';
-import { UserProfile } from '@nx-nutrition-models';
 import { BrowserService } from 'ngx-neo-ui';
 import { ApiService } from '../api/api.service';
 import { HttpRequest } from '@angular/common/http';
-import { UserService } from '../user/user.service';
+import { UserAuthState } from '../../models';
 import { Logout } from '../../../../../../models/user/logout';
 
 @Injectable({

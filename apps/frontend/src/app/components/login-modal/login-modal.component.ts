@@ -8,13 +8,13 @@ import {
 } from 'ngx-neo-ui';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { JsonPipe, NgIf } from '@angular/common';
-import { AuthService, UserService, ValidationService } from '../../services';
 import { HttpErrorResponse } from '@angular/common/http';
-import { finalize, takeUntil } from 'rxjs';
+import { finalize, switchMap, takeUntil } from 'rxjs';
 import { Router, RouterLink } from '@angular/router';
 import { ThrobberComponent } from '../throbber/throbber.component';
-import { LoginBody, LoginType } from '@nx-nutrition-models';
+import { LoginBody, } from '@nx-nutrition-models';
 import { CommonFormControl, GetCommonFormControl } from '../../models/forms/form-control';
+import { AuthService, UserService, ValidationService } from '@nx-nutrition/nutrition-ui-lib';
 
 type LoginForm = Record<keyof Omit<LoginBody, 'loginType'>, CommonFormControl>
 
@@ -56,6 +56,7 @@ export class LoginModalComponent implements OnInit {
     private destroy$: DestroyService,
     private browserService: BrowserService,
     private authService: AuthService,
+    private userService: UserService,
     private modalService: ModalService,
     private validationService: ValidationService,
     private router: Router,
@@ -129,12 +130,15 @@ export class LoginModalComponent implements OnInit {
       }
 
       this.userAuth$(body).pipe(
+        switchMap(() => this.userService.getUserData$()),
         finalize(() => this.cdr.detectChanges()),
         takeUntil(this.destroy$),
       )
         .subscribe(
           {
-            next: () => !this.route ? this.modalService.close() : false,
+            next: () => {
+              !this.route ? this.modalService.close() : this.router.navigate([this.route]);
+            },
             error: (error: HttpErrorResponse) => {
               if (error.error.message === 'USER_NOT_FOUND' || error.error.message === 'BAD_PASSWORD') {
                 this.login?.setErrors({

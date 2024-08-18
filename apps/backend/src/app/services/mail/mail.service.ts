@@ -7,8 +7,6 @@ export class MailService {
   private transporter;
   constructor(private configService: ConfigService,) {
 
-    console.log('this.configService', this.configService)
-
     let configOptions = {
       host: this.configService.get('SMTP_HOST'),
       port: this.configService.get('SMTP_PORT'),
@@ -25,9 +23,9 @@ export class MailService {
 
 
   sendActivationMail(to, link) {
+    // todo для тестирования постманом
     console.log('to', to)
     console.log('link', link)
-    // todo тестируем постманом
 
     if (!this.configService.get('MAIL_SERVICE_TEST')) {
       this.transporter.sendMail({

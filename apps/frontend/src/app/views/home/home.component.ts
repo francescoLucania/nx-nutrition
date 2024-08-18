@@ -1,14 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ButtonStandaloneComponent, InputStandaloneComponent } from 'ngx-neo-ui';
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
-import { UserService } from '../../services';
 import { RouterLink } from '@angular/router';
-
-type LoginForm = {
-  login: AbstractControl<string>,
-  password: AbstractControl<string>
-}
 
 @Component({
   selector: 'nutrition-home',

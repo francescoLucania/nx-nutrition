@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@nx-nutrition-models": ["models/index.ts"]
+      "@nx-nutrition-models": ["models/index.ts"],
+      "@nx-nutrition/nutrition-ui-lib": ["libs/nutrition-ui-lib/src/index.ts"]
     },
     "noPropertyAccessFromIndexSignature": true
   },

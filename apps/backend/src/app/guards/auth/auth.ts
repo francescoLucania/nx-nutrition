@@ -12,13 +12,14 @@ export class AuthGuard implements CanActivate {
   ): boolean {
     const response = context.switchToHttp().getRequest();
     const token = response?.headers['authorization']?.split(' ')?.[1];
+
     if (
       token &&
       this.tokenService.validateToken('ACCESS_TOKEN', token)
     ) {
-
       return true;
     }
+
     throw new UnauthorizedException(token ? 'NOT_VALID_TOKEN' : 'TOKEN_MISSING')
   }
 }

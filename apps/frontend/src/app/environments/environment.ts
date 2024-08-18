@@ -1,6 +1,7 @@
-import { Environment } from './model/environment.model';
+import { Config } from '@nx-nutrition/nutrition-ui-lib';
 
-export const environment: Environment = {
+
+export const environment: Config = {
   production: false,
   apiUrl: 'http://localhost:5000/api',
 };

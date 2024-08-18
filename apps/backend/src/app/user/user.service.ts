@@ -52,8 +52,7 @@ export class UserService {
         `${this.configService.get('DOMAIN')}/api/user/activate?id=${activationLink}`
       );
 
-      const user = new UserDto(creatUser);
-      return await this.buildUserAuthData(user);
+      return await this.buildUserAuthData(new UserDto(creatUser));
     } else {
       throw new ValidationException(searchByPhone ? 'BUSY_PHONE' : 'BUSY_EMAIL')
     }
@@ -75,7 +74,10 @@ export class UserService {
       if (!(await this.loginPasswordEquals(user, password))) {
         throw new ValidationException(`BAD_PASSWORD`)
       } else if (user.isActivated) {
-        return this.buildUserAuthData(new UserDto(user), true);
+        user.lastActivity = new Date().toString();
+        // @ts-ignore
+        await user?.save();
+        return await this.buildUserAuthData(new UserDto(user), true);
       } else {
         throw new ValidationException(`USER_NOT_ACTIVATED`);
       }
@@ -116,11 +118,18 @@ export class UserService {
 
   private async buildUserAuthData(user: UserDto, authData = false) {
     const tokens = this.tokenService.generateTokens({...user});
-    await this.tokenService.saveToken(user.id, tokens);
-    return authData ? {
-      ...user,
-      ...tokens
-    } : {...user}
+
+    if (authData) {
+
+      await this.tokenService.saveToken(user.id, tokens);
+
+      return {
+        ...user,
+        ...tokens
+      }
+    }
+
+    return {accessToken: tokens.accessToken, ...user,}
   }
 
   private async loginPasswordEquals(user: User, password: string): Promise<boolean> {
@@ -133,9 +142,12 @@ export class UserService {
   }
 
   async refresh(refreshToken: string): Promise<UserDto> {
+
     if (refreshToken) {
       const user = await this.getUserByToken('REFRESH_TOKEN', refreshToken);
-      return user ? this.buildUserAuthData(new UserDto(user)) : null;
+      if (user) {
+        return this.buildUserAuthData(new UserDto(user))
+      }
     }
     throw new UnauthorizedException('BAD_TOKEN')
   }
@@ -148,6 +160,7 @@ export class UserService {
     } else {
       throw new Error('INCORRECT_LINK')
     }
+
     return await activatedCandidate.save();
   }
 
@@ -159,6 +172,7 @@ export class UserService {
 
   private async getUserByToken(type: TokenType, token: string): Promise<UserDocument> {
     const validToken = this.tokenService.validateToken(type, token);
+
     if (validToken) {
       if (type === 'REFRESH_TOKEN') {
         const tokenFromDb = await this.tokenService.findToken(token);

@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { ButtonStandaloneComponent, ModalService, NavigateListComponent } from 'ngx-neo-ui';
 import { INavigateList } from 'ngx-neo-ui/lib/components/navigate-list/models/navigate';
-import { AuthService } from '../../services';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { LoginModalComponent } from '../login-modal/login-modal.component';
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { AuthService } from '@nx-nutrition/nutrition-ui-lib';
 
 @Component({
   selector: 'nutrition-header',

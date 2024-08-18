@@ -7,7 +7,6 @@ import {
   WritableSignal
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
-import { AuthService, LoginTypes, UserService, ValidationService } from '../../services';
 import { takeUntil } from 'rxjs';
 import {
   BrowserService, ButtonStandaloneComponent,
@@ -31,6 +30,7 @@ import { CommonFormControl, GetCommonFormControl } from '../../models/forms/form
 import { BaseInputComponent } from '../base-input/base-input.component';
 import { matchValidator } from '../../validators';
 import { minLength } from 'class-validator';
+import { AuthService, LoginTypes, UserService, ValidationService } from '@nx-nutrition/nutrition-ui-lib';
 
 type RegistrationForm = Record<keyof RegistrationBody, CommonFormControl>;
 type PasswordForm = {

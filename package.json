@@ -6,7 +6,7 @@
     "update": "nx migrate latest",
     "serve backend": "nx serve backend",
     "serve frontend-profile": "nx serve frontend-profile",
-    "serve frontend": "nx serve frontend",
+    "serve frontend": "nx serve frontend --force",
     "build frontend": "nx build backend",
     "build backend": "nx build backend --mode production",
     "test": "jest"
@@ -56,8 +56,6 @@
     "@typescript-eslint/parser": "7.17.0",
     "@typescript-eslint/utils": "^7.16.0",
     "axios": "^1.6.0",
-    "bcrypt": "^5.1.1",
-    "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "cypress": "13.13.1",
     "deep-parse-json": "^2.0.0",
@@ -106,6 +104,8 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.14.3"
+    "zone.js": "~0.14.3",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3"
   }
 }

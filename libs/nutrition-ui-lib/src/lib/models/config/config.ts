@@ -1,4 +1,4 @@
-export type Environment = {
+export type Config = {
   production: boolean;
   apiUrl: string;
 }

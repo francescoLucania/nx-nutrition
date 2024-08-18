@@ -1,8 +1,8 @@
 import { CanActivateFn } from '@angular/router';
-import { AuthService } from '../../services';
 import { inject } from '@angular/core';
 import { ModalService } from 'ngx-neo-ui';
 import { LoginModalComponent } from '../../components/login-modal/login-modal.component';
+import { AuthService } from '@nx-nutrition/nutrition-ui-lib';
 
 export const userProfileGuard: CanActivateFn = (route, state) => {
   const authService: AuthService = inject(AuthService);

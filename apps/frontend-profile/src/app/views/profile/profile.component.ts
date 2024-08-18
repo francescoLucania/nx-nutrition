@@ -1,19 +1,19 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { AuthService, UserService } from '../../services';
-import { catchError, Observable, of, switchMap, tap } from 'rxjs';
-import { AsyncPipe, JsonPipe, NgIf } from '@angular/common';
-import { response } from 'express';
-import { ButtonStandaloneComponent } from 'ngx-neo-ui';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { UserService } from '@nx-nutrition/nutrition-ui-lib';
+import { ButtonStandaloneComponent } from 'ngx-neo-ui';
+import { AsyncPipe, JsonPipe, NgIf } from '@angular/common';
+import { UserProfile } from '@nx-nutrition-models';
 
 @Component({
   selector: 'nutrition-profile',
   standalone: true,
   imports: [
-    AsyncPipe,
+    ButtonStandaloneComponent,
     JsonPipe,
-    NgIf,
-    ButtonStandaloneComponent
+    AsyncPipe,
+    NgIf
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
@@ -21,11 +21,11 @@ import { Router } from '@angular/router';
 })
 export class ProfileComponent implements OnInit {
 
-  public userData$: Observable<any> | undefined
+  public userData$: Observable<UserProfile | null> | undefined
   constructor(
     private userService: UserService,
     private router: Router,
-) {
+  ) {
   }
 
   public ngOnInit() {
