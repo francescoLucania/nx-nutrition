@@ -44,5 +44,9 @@
 
   &__user-menu {
     margin-left: auto;
+
+    @include theme.mq(md) {
+      display: flex;
+    }
   }
 }

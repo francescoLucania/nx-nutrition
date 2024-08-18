@@ -11,7 +11,6 @@ export const userProfileGuard: CanActivateFn = (route, state) => {
   if (authService.isLoggedIn === 'done') {
     return true;
   } else {
-    console.log('route?.routeConfig?.path', route?.routeConfig?.path);
     modalService.open(LoginModalComponent, undefined, {
       route: route?.routeConfig?.path
     });

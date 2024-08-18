@@ -69,6 +69,7 @@ export class LoginModalComponent implements OnInit {
   }
 
   private initState(): void {
+    console.log('onInit')
     this.isBrowser.set(this.browserService.isBrowser);
     this.authService.isLoggedIn$
       .pipe(
@@ -129,6 +130,8 @@ export class LoginModalComponent implements OnInit {
         password: this.password?.value
       }
 
+      this.loading.set(true);
+
       this.userAuth$(body).pipe(
         switchMap(() => this.userService.getUserData$()),
         takeUntil(this.destroy$),
@@ -139,6 +142,7 @@ export class LoginModalComponent implements OnInit {
               !this.route ? this.modalService.close() : this.router.navigate([this.route]);
             },
             error: (error: HttpErrorResponse) => {
+              this.loading.set(false);
               if (error.error.message === 'USER_NOT_FOUND' || error.error.message === 'BAD_PASSWORD') {
                 this.login?.setErrors({
                   error: 'Неправильный логин или пароль'

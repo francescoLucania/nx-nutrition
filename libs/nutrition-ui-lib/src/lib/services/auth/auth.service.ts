@@ -19,9 +19,7 @@ export class AuthService {
   }
 
   public set updateIsLoggedIn(value: UserAuthState) {
-    setTimeout(() => {
-      this._isLoggedIn$.next(value);
-    }, 1000)
+    this._isLoggedIn$.next(value);
   }
 
   public get isLoggedIn(): UserAuthState {

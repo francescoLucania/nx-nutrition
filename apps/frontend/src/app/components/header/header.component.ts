@@ -5,7 +5,7 @@ import { AsyncPipe, NgIf } from '@angular/common';
 import { LoginModalComponent } from '../login-modal/login-modal.component';
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AuthService } from '@nx-nutrition/nutrition-ui-lib';
+import { AuthService, UserService } from '@nx-nutrition/nutrition-ui-lib';
 import { ThrobberComponent } from '../throbber/throbber.component';
 
 @Component({
@@ -51,16 +51,19 @@ export class HeaderComponent {
     },
 
   ]
-  public isLoggedIn$ = this.authService.isLoggedIn$;
+  public user$ = this.userService.userProfileData$;
 
-  public isLoggedIn = toSignal(
-    this.isLoggedIn$,
+  public user = toSignal(
+    this.user$,
     {
-      requireSync: true }
+      manualCleanup: true,
+      requireSync: true
+    }
   );
 
   constructor(
     private authService: AuthService,
+    private userService: UserService,
     private modalService: ModalService,
     private cdr: ChangeDetectorRef,
     ) {

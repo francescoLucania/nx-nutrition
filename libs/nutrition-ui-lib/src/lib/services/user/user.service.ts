@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, EMPTY, Observable, of, shareReplay, tap, throwError } from 'rxjs';
-import { HttpRequest } from '@angular/common/http';
+import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
 import { ApiService } from '../api/api.service';
 import { BrowserService } from 'ngx-neo-ui';
 import { CreateResponse, RegistrationBody, UserProfile } from '@nx-nutrition-models';
@@ -12,6 +11,7 @@ import { AuthService } from '../auth/auth.service';
 export class UserService {
 
   private _userProfileData$= new BehaviorSubject<UserProfile | null>(null);
+  public userProfileData$= this._userProfileData$.asObservable();
 
   private set logoutUser(value: null) {
     this._userProfileData$.next(value);
@@ -45,7 +45,7 @@ export class UserService {
       );
     }
 
-    return this._userProfileData$.asObservable();
+    return this.userProfileData$;
   }
 
   public userLogout$(): Observable<any> {
