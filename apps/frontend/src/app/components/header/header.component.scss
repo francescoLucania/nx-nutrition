@@ -2,6 +2,8 @@
 
 .main-header {
   padding: 24px 0;
+  border-bottom: 1px solid var(--colorLightest);
+  background: #fff;
 
   @include theme.mq(md) {
     padding: 32px 0;
@@ -9,8 +11,18 @@
 
   &__navigate-grid {
     display: flex;
+    justify-content: space-between;
     align-items: center;
   }
+
+  &__navigate-menu,
+  &__navigate-logotype,
+  &__user-menu {
+    @include theme.mq(md) {
+      width: 33.33%;
+    }
+  }
+
 
   &__navigate-menu {
     display: none;
@@ -24,11 +36,16 @@
     display: block;
     font-size: 24px;
     line-height: 1;
-    text-transform: uppercase;
-    color: var(--colorBrand);
+    font-weight: 500;
+    //text-transform: uppercase;
+    color: var(--colorSound);
 
     &:hover {
        color: var(--colorBrand);
+    }
+
+    @include theme.mq(md) {
+      text-align: center;
     }
 
     @include theme.mq(md) {
@@ -38,15 +55,15 @@
   }
 
   &__navigate-menu {
-    margin-left: 64px;
     color: var(--colorBrand);
   }
 
   &__user-menu {
-    margin-left: auto;
+    //margin-left: auto;
 
     @include theme.mq(md) {
       display: flex;
+      justify-content: flex-end;
     }
   }
 }

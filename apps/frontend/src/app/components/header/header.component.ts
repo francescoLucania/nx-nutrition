@@ -31,24 +31,19 @@ export class HeaderComponent {
     },
 
     {
-      name: 'О нас',
-      uri: 'about',
-    },
-
-    {
       name: 'Цены',
       uri: 'price',
     },
 
     {
-      name: 'Акции',
+      name: 'Отзывы',
       uri: 'action',
     },
-
-    {
-      name: 'Контакты',
-      uri: 'contacts',
-    },
+    //
+    // {
+    //   name: 'Контакты',
+    //   uri: 'contacts',
+    // },
 
   ]
   public user$ = this.userService.userProfileData$;

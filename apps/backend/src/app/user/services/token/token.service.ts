@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Token, TokenDocument } from '../../schemas/token.schema';
+import { UserDto } from '../../dto/user-public.dto';
 
 export type TokenType = 'ACCESS_TOKEN' | 'REFRESH_TOKEN';
 
@@ -13,7 +14,7 @@ export class TokenService {
   ) {
   }
 
-  public generateTokens(payload): {accessToken: string, refreshToken: string} {
+  public generateTokens(payload: UserDto): {accessToken: string, refreshToken: string} {
     const accessToken = jwt.sign(payload, this.configService.get('JWT_ACCESS_SECRET'), {expiresIn: '30m'});
     const refreshToken = jwt.sign(payload, this.configService.get('JWT_REFRESH_SECRET'), {expiresIn: '30d'});
 

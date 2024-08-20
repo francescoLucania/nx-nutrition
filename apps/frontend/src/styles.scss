@@ -6,9 +6,126 @@
 @forward 'ngx-neo-ui/assets/styles/theme-provider/base-styles/typography/typography';
 @forward 'ngx-neo-ui/assets/styles/theme-provider/base-styles/container/container';
 
+$baseFont: 'SF Pro Display', Arial, Helvetica, sans-serif !default;
+
+$fontSizeSmall: 14px !default;
+$lineHeightSmall: 20px !default;
+
+$fontSizeBase: 16px !default;
+$lineHeightBase: 24px !default;
+
+$fontSizeLarge: 18px !default;
+$lineHeightLarge: 32px !default;
+
+
+// palette variables
+$colorBase: #13070C !default;
+$colorLight: rgba($colorBase, 0.8) !default;
+$colorLighter: rgba($colorBase, 0.6) !default;
+$colorLightest: #f2f2f2 !default;
+
+$colorBrand: #16E1A7 !default;
+$colorSound: #319F77 !default;
+$colorSoundLight: rgba($colorSound, 0.6) !default;
+$bgColor: #ddc8c4 !default;
+$bgColorMode: #c18c86;
+
+$colorError: #A44F47 !default;
+
+$accessibilityBorder: #9b3be5 !default;
+$accessibilityBackground: #fef0cc !default;
+$accessibilityColor: $accessibilityBorder !default;
+
+// Dark
+$colorBaseDark: #EEEEEE !default;
+$colorLightDark: rgba($colorBaseDark, 0.7) !default;
+$colorLighterDark: rgba($colorBaseDark, 0.6) !default;
+$colorLightestDark: rgba($colorBaseDark, 0.4) !default;
+
+$colorBrandDark: $colorBrand !default;
+$colorSoundDark: $colorBrand !default;
+$colorSoundLightDark: rgba($colorSound, 0.6) !default;
+$colorSoundDark: $colorSoundLight !default;
+$bgColorDark: #31363F !default;
+$bgColorModeDark: rgba($bgColorDark, 0.8);
+
+$colorErrorDark: red !default;
+
+$accessibilityBorderDark: #9b3be5 !default;
+$accessibilityBackgroundDark: #fef0cc !default;
+$accessibilityColorDark: $accessibilityBorder !default;
+
 :root {
-  --baseFont: #{'SF Pro Display', Arial, Helvetica, sans-serif};
+  --baseFont: #{$baseFont};
+
+  --fontSizeSmall: #{$fontSizeSmall};
+  --lineHeightSmall: #{$lineHeightSmall};
+
+  --fontSizeBase: #{$fontSizeBase};
+  --lineHeightBase: #{$lineHeightBase};
+
+  --fontSizeLarge: #{$fontSizeLarge};
+  --lineHeightLarge: #{$lineHeightLarge};
+
+
+  --colorBase: #{$colorBase};
+  --colorLight: #{$colorLight};
+  --colorLighter: #{$colorLighter};
+  --colorLightest: #{$colorLightest};
+
+  --colorBrand: #{$colorBrand};
+  --colorSound: #{$colorSound};
+  --colorSoundLight: #{$colorSoundLight};
+  --bgColor: #{$bgColor};
+  --bgColorMode: #{$bgColorMode};
+
+  --accessibilityBorder: #{$accessibilityBorder};
+  --accessibilityBackground: #{$accessibilityBackground};
+  --accessibilityColor: #{$accessibilityColor};
+
+  --colorError: #{$colorError};
 }
+
+html[data-theme='dark'] {
+  --colorBase: #{$colorBaseDark};
+  --colorLight: #{$colorLightDark};
+  --colorLighter: #{$colorLighterDark};
+  --colorLightest: #{$colorLightestDark};
+
+  --colorBrand: #{$colorBrandDark};
+  --colorSound: #{$colorSoundDark};
+  --colorSoundLight: #{$colorSoundLightDark};
+  --bgColor: #{$bgColorDark};
+  --bgColorMode: #{$bgColorModeDark};
+
+  --accessibilityBorder: #{$accessibilityBorderDark};
+  --accessibilityBackground: #{$accessibilityBackgroundDark};
+  --accessibilityColor: #{$accessibilityColorDark};
+
+  --colorError: #{$colorErrorDark};
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --colorBase: #{$colorBaseDark};
+    --colorLight: #{$colorLightDark};
+    --colorLighter: #{$colorLighterDark};
+    --colorLightest: #{$colorLightestDark};
+
+    --colorBrand: #{$colorBrandDark};
+    --colorSound: #{$colorSoundDark};
+    --colorSoundLight: #{$colorSoundLightDark};
+    --bgColor: #{$bgColorDark};
+    --bgColorMode: #{$bgColorModeDark};
+
+    --accessibilityBorder: #{$accessibilityBorderDark};
+    --accessibilityBackground: #{$accessibilityBackgroundDark};
+    --accessibilityColor: #{$accessibilityColorDark};
+
+    --colorError: #{$colorErrorDark};
+  }
+}
+
 
 .text-center {
   text-align: center;
@@ -23,4 +140,59 @@
   --inputPaddingBottomLarge: #{14px};
   --inputPaddingLeftLarge: #{12px};
   --inputPaddingRightLarge: #{12px};
+}
+
+
+:root {
+  --navigateListColorBase: var(--colorBase);
+  --navigateListFontWeight: 500;
+  --navigateListColorHover: var(--colorBrand);
+}
+
+
+// neo-ui-button
+$buttonBorderWidth: 3px;
+$buttonBorderRadius: 0;
+$buttonBackgroundBase: $colorBase;
+$buttonFontWeight: 500;
+$buttonColorBase: #fff;
+
+$buttonPaddingTopSmall: 10px;
+$buttonPaddingBottomSmall: 10px;
+$buttonPaddingLeftSmall: 24px;
+$buttonPaddingRightSmall: 24px;
+
+$buttonPaddingTopBase: 14px;
+$buttonPaddingBottomBase: 14px;
+$buttonPaddingLeftBase: 30px;
+$buttonPaddingRightBase: 30px;
+
+$buttonPaddingTopLarge: 16px;
+$buttonPaddingBottomLarge: 16px;
+$buttonPaddingLeftLarge: 32px;
+$buttonPaddingRightLarge: 32px;
+
+:root {
+
+  // neo-ui-button
+  --buttonBorderWidth: #{$buttonBorderWidth};
+  --buttonBorderRadius: #{$buttonBorderRadius};
+  --buttonColotBase: #{$buttonColorBase};
+  --buttonFontWeight: #{$buttonFontWeight};
+  --buttonBackgroundBase: #{$buttonBackgroundBase};
+
+  --buttonPaddingTopSmall: #{$buttonPaddingTopSmall};
+  --buttonPaddingBottomSmall: #{$buttonPaddingBottomSmall};
+  --buttonPaddingLeftSmall: #{$buttonPaddingLeftSmall};
+  --buttonPaddingRightSmall: #{$buttonPaddingRightSmall};
+
+  --buttonPaddingTopBase: #{$buttonPaddingTopBase};
+  --buttonPaddingBottomBase: #{$buttonPaddingBottomBase};
+  --buttonPaddingLeftBase: #{$buttonPaddingLeftBase};
+  --buttonPaddingRightBase: #{$buttonPaddingRightBase};
+
+  --buttonPaddingTopLarge: #{$buttonPaddingTopLarge};
+  --buttonPaddingBottomLarge: #{$buttonPaddingBottomLarge};
+  --buttonPaddingLeftLarge: #{$buttonPaddingLeftLarge};
+  --buttonPaddingRightLarge: #{$buttonPaddingRightLarge};
 }

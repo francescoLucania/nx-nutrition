@@ -1,0 +1,54 @@
+@use 'ngx-neo-ui/assets/styles/theme-provider/theme_provider' as theme;
+
+
+.home-promo {
+
+  @include theme.mq(md) {
+    display: flex;
+  }
+  &__column {
+    //text-align: center;
+
+    @include theme.mq(md) {
+      margin-top: -48px;
+      padding: 48px 24px;
+      width: 50%;
+      min-height: calc(100vh - 97px);
+    }
+
+    &:not(:first-child) {
+      @include theme.mq(sm) {
+        display: none;
+      }
+    }
+
+    &--offer {
+      background: var(--bgColorMode);
+      color: #fff;
+
+      @include theme.mq(md) {
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    &--slider {
+      background-position: bottom center;
+      background-size: cover;
+    }
+  }
+
+  &__title {
+    line-height: 1;
+    color: #fff;
+
+    @include theme.mq(md) {
+      font-size: 48px;
+    }
+  }
+
+  &__description {
+    font-weight: 700;
+    color: #fff;
+  }
+}
