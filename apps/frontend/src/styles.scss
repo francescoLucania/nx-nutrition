@@ -17,6 +17,14 @@ $lineHeightBase: 24px !default;
 $fontSizeLarge: 18px !default;
 $lineHeightLarge: 32px !default;
 
+// common variables
+$borderRadiusSmall: 0;
+$borderRadiusBase: 2px;
+$borderRadiusLarge: 4px;
+
+$transitionSmall: 0.2s;
+$transitionBase: 0.4s;
+$transitionLarge: 0.8s;
 
 // palette variables
 $colorBase: #13070C !default;
@@ -167,10 +175,10 @@ $buttonPaddingBottomBase: 14px;
 $buttonPaddingLeftBase: 30px;
 $buttonPaddingRightBase: 30px;
 
-$buttonPaddingTopLarge: 16px;
-$buttonPaddingBottomLarge: 16px;
-$buttonPaddingLeftLarge: 32px;
-$buttonPaddingRightLarge: 32px;
+$buttonPaddingTopLarge: 14px;
+$buttonPaddingBottomLarge: 14px;
+$buttonPaddingLeftLarge: 30px;
+$buttonPaddingRightLarge: 30px;
 
 :root {
 
@@ -195,4 +203,44 @@ $buttonPaddingRightLarge: 32px;
   --buttonPaddingBottomLarge: #{$buttonPaddingBottomLarge};
   --buttonPaddingLeftLarge: #{$buttonPaddingLeftLarge};
   --buttonPaddingRightLarge: #{$buttonPaddingRightLarge};
+}
+
+
+// neo-ui-modal
+$modalPaddingSm: 24px 16px;
+$modalBorderSm: none;
+$modalBoxShadowSm: none;
+$modalBorderRadiusSm: 0;
+
+$modalPadding: 32px 24px;
+$modalBorder: 4px solid var(--colorSound);
+$modalBoxShadow: none;
+$modalBorderRadius: none;
+$modalBgColor: #fff;
+
+:root {
+
+  --modalPaddingSm: #{$modalPaddingSm};
+  --modalBoxShadowSm: #{$modalBoxShadowSm};
+  --modalBorderSm: #{$modalBorderSm};
+  --modalBorderRadiusSm: #{$modalBorderRadiusSm};
+
+  --modalPadding: #{$modalPaddingSm};
+  --modalBoxShadow: #{$modalBoxShadowSm};
+  --modalBorder: #{$modalBorder};
+  --modalBorderRadius: #{$modalBorderRadiusSm};
+  --modalBgColor: #{$modalBgColor};
+}
+
+// neo-ui-navigate-list
+$navigateListColorBase: $colorSound;
+$navigateListColorHover: $colorBase;
+$navigateListFontWeight: 500;
+$navigateListTransition: $transitionSmall;
+
+:root {
+  --navigateListColorBase: #{$navigateListColorBase};
+  --navigateListColorHover: #{$navigateListColorHover};
+  --navigateListFontWeight: #{$navigateListFontWeight};
+  --navigateListTransition: #{$navigateListTransition};
 }

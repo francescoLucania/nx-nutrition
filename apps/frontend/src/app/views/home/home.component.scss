@@ -1,13 +1,24 @@
 @use 'ngx-neo-ui/assets/styles/theme-provider/theme_provider' as theme;
+@use 'ngx-neo-ui/assets/styles/theme-provider/base-styles/typography/typography' as typography;
+
+
 
 
 .home-promo {
+  @include theme.mq(lg) {
+    --buttonPaddingTopLarge: #{24px};
+    --buttonPaddingBottomLarge: #{24px};
+    --buttonPaddingLeftLarge: #{24px};
+    --buttonPaddingRightLarge: #{24px};
+  }
 
   @include theme.mq(md) {
     display: flex;
   }
   &__column {
     //text-align: center;
+    margin-top: -32px;
+    padding: 32px 0;
 
     @include theme.mq(md) {
       margin-top: -48px;
@@ -39,16 +50,32 @@
   }
 
   &__title {
-    line-height: 1;
     color: #fff;
 
     @include theme.mq(md) {
+      @include typography.heading-h2;
+    }
+
+    @include theme.mq(lg) {
       font-size: 48px;
+      line-height: 1;
     }
   }
 
   &__description {
+    @include typography.heading-h6;
+
     font-weight: 700;
     color: #fff;
+
+    @include theme.mq(lg) {
+      @include typography.heading-h4;
+    }
+
+    @include theme.mq(lg) {
+      @include typography.heading-h3;
+    }
   }
 }
+
+

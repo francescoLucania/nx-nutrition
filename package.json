@@ -98,7 +98,7 @@
     "lodash": "^4.17.21",
     "mongoose": "^8.2.1",
     "nestjs-form-data": "^1.9.6",
-    "ngx-neo-ui": "^4.0.8",
+    "ngx-neo-ui": "^4.0.14",
     "nodemailer": "^6.9.12",
     "normalize.css": "^8.0.1",
     "reflect-metadata": "^0.1.13",
