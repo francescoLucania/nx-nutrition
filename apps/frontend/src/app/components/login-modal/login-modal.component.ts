@@ -85,7 +85,9 @@ export class LoginModalComponent implements OnInit {
             this.loading.set(false);
             break;
           case 'done':
-            this.router.navigate([this.route]);
+            if (this.route) {
+              this.router.navigate([this.route]);
+            }
             this.modalService.close();
             break;
         }

@@ -1,11 +1,20 @@
-<div class="container">
-  <div *ngIf="this.userData$">
-    {{this.userData$ | async | json}}
-  </div>
 
-  <div class="mt-32">
-    <neo-ui-button (click)="logout()">
-      Выйти
-    </neo-ui-button>
+<div class="view-container">
+  <div class="container">
+    <div class="nutrition-profile-view">
+      <h1 class="heading-h3 mb-32">Личный кабинет</h1>
+      <div class="nutrition-profile-view__grid">
+        <div class="nutrition-profile-view__navigate-col">
+          <neo-ui-navigate-list
+            [navigate]="profileMenu"
+            [type]="'vertical'"
+          ></neo-ui-navigate-list>
+
+        </div>
+        <div class="nutrition-profile-view__content-col">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

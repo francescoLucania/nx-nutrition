@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Router, RouterOutlet } from '@angular/router';
 import { UserService } from '@nx-nutrition/nutrition-ui-lib';
-import { ButtonStandaloneComponent } from 'ngx-neo-ui';
+import { ButtonStandaloneComponent, INavigateList, NavigateListComponent } from 'ngx-neo-ui';
 import { AsyncPipe, JsonPipe, NgIf } from '@angular/common';
 import { UserProfile } from '@nx-nutrition-models';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'nutrition-profile',
@@ -13,23 +13,37 @@ import { UserProfile } from '@nx-nutrition-models';
     ButtonStandaloneComponent,
     JsonPipe,
     AsyncPipe,
-    NgIf
+    NgIf,
+    NavigateListComponent,
+    RouterOutlet
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent {
 
-  public userData$: Observable<UserProfile | null> | undefined
+  public user$ = this.userService.userProfileData$;
+
+  public user = toSignal(
+    this.user$,
+    {
+      manualCleanup: true,
+      requireSync: true
+    }
+  );
+
+
+  public profileMenu: INavigateList[] = [
+    { name: 'Профиль', uri: 'profile' },
+    { name: 'История заказов', uri: 'media-query' },
+    { name: 'Документы', uri: 'typography' },
+  ];
+
   constructor(
     private userService: UserService,
     private router: Router,
   ) {
-  }
-
-  public ngOnInit() {
-    this.userData$ = this.userService.getUserData$()
   }
 
   public logout() {
