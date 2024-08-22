@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
-import { ButtonStandaloneComponent, ModalService, NavigateListComponent } from 'ngx-neo-ui';
+import { ButtonStandaloneComponent, MediaQueriesService, ModalService, NavigateListComponent } from 'ngx-neo-ui';
 import { INavigateList } from 'ngx-neo-ui/lib/components/navigate-list/models/navigate';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { LoginModalComponent } from '../login-modal/login-modal.component';
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AuthService, UserService } from '@nx-nutrition/nutrition-ui-lib';
+import { AuthService, IconComponent, UserService } from '@nx-nutrition/nutrition-ui-lib';
 import { ThrobberComponent } from '../throbber/throbber.component';
 
 @Component({
@@ -17,7 +17,8 @@ import { ThrobberComponent } from '../throbber/throbber.component';
     NgIf,
     AsyncPipe,
     RouterLink,
-    ThrobberComponent
+    ThrobberComponent,
+    IconComponent
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
@@ -46,7 +47,7 @@ export class HeaderComponent {
     // },
 
   ]
-  public user$ = this.userService.userProfileData$;
+  private user$ = this.userService.userProfileData$;
 
   public user = toSignal(
     this.user$,
@@ -56,7 +57,18 @@ export class HeaderComponent {
     }
   );
 
+  private isDesktop$ = this.mqService.deviceType$;
+
+  public isDesktop = toSignal(
+    this.isDesktop$,
+    {
+      manualCleanup: true,
+      requireSync: true
+    }
+  );
+
   constructor(
+    private mqService: MediaQueriesService,
     private authService: AuthService,
     private userService: UserService,
     private modalService: ModalService,

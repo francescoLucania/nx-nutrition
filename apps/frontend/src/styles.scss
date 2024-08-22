@@ -244,3 +244,13 @@ $navigateListTransition: $transitionSmall;
   --navigateListFontWeight: #{$navigateListFontWeight};
   --navigateListTransition: #{$navigateListTransition};
 }
+
+
+:root {
+  --nutrtionIconColorBase: var(--colorBase);
+  --nutrtionIconColorHover: var(--colorBrand);
+}
+
+button {
+  cursor: pointer;
+}

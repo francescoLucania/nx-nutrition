@@ -24,10 +24,19 @@
           </div>
         }
 
-
-        <neo-ui-button [link]="'profile'">
-          Личный кабинет
-        </neo-ui-button>
+        @if (isDesktop()?.deviceType === 'lg') {
+          <neo-ui-button [link]="'profile'">
+            Личный кабинет
+          </neo-ui-button>
+        } @else {
+          <button type="button">
+            <nutrition-icon
+              [name]="'burger'"
+              [class]="'burger icon--40'"
+            >
+            </nutrition-icon>
+          </button>
+        }
 
       </div>
 
