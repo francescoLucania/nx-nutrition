@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { UserService } from '@nx-nutrition/nutrition-ui-lib';
 import { ButtonStandaloneComponent, INavigateList, NavigateListComponent } from 'ngx-neo-ui';
 import { AsyncPipe, JsonPipe, NgIf } from '@angular/common';
-import { UserProfile } from '@nx-nutrition-models';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -23,21 +22,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
 })
 export class ProfileComponent {
 
-  public user$ = this.userService.userProfileData$;
-
-  public user = toSignal(
-    this.user$,
-    {
-      manualCleanup: true,
-      requireSync: true
-    }
-  );
 
 
   public profileMenu: INavigateList[] = [
-    { name: 'Профиль', uri: 'profile' },
-    { name: 'История заказов', uri: 'media-query' },
-    { name: 'Документы', uri: 'typography' },
+    { name: 'Профиль', uri: '/profile' },
+    { name: 'История заказов', uri: '/media-query' },
+    { name: 'Документы', uri: '/typography' },
   ];
 
   constructor(

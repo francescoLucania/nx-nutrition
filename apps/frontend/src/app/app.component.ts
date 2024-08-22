@@ -6,7 +6,7 @@ import { ModalStandaloneComponent } from 'ngx-neo-ui';
 
 @Component({
   standalone: true,
-  imports: [NxWelcomeComponent, RouterModule, HeaderComponent, ModalStandaloneComponent],
+  imports: [RouterModule, HeaderComponent, ModalStandaloneComponent],
   selector: 'nx-nutrition-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',

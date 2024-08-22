@@ -1,9 +1,12 @@
 import { Route } from '@angular/router';
-import { ProfileComponent } from './views/profile/profile.component';
 
 export const appRoutes: Route[] = [
   {
     path: '',
-    component: ProfileComponent,
+    loadComponent: async () =>
+      (await import('./views/profile/profile.component'))
+        .ProfileComponent,
+    loadChildren: async () =>
+      (await import('./views/profile/profile.routes')).profileRoutes,
   },
 ];
