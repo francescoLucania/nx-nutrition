@@ -12,6 +12,17 @@
     "test": "jest",
     "prepare": "husky install"
   },
+  "lint-staged": {
+    "*.{json,html,scss}": [
+      "prettier --write ./",
+      "git add"
+    ],
+    "*.{js,ts}": [
+      "prettier --write ./",
+      "eslint --fix --cache",
+      "git add"
+    ]
+  },
   "private": true,
   "devDependencies": {
     "@angular-devkit/build-angular": "18.1.2",
@@ -100,6 +111,7 @@
     "es-module-shims": "^1.5.12",
     "express": "~4.18.2",
     "jsonwebtoken": "^9.0.2",
+    "lint-staged": "^15.2.9",
     "lodash": "^4.17.21",
     "mongoose": "^8.2.1",
     "nestjs-form-data": "^1.9.6",
