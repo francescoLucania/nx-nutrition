@@ -9,7 +9,8 @@
     "serve frontend": "nx serve frontend --force",
     "build frontend": "nx build backend",
     "build backend": "nx build backend --mode production",
-    "test": "jest"
+    "test": "jest",
+    "prepare": "husky install"
   },
   "private": true,
   "devDependencies": {
@@ -62,6 +63,7 @@
     "eslint": "8.57.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-cypress": "^2.13.4",
+    "husky": "^8.0.0",
     "jest": "^29.4.1",
     "jest-environment-jsdom": "^29.4.1",
     "jest-environment-node": "^29.4.1",
@@ -77,6 +79,7 @@
   },
   "dependencies": {
     "@angular-architects/native-federation": "^18.1.2",
+    "@angular-eslint/builder": "^18.3.0",
     "@angular/animations": "18.1.1",
     "@angular/common": "18.1.1",
     "@angular/compiler": "18.1.1",
@@ -90,6 +93,8 @@
     "@maskito/angular": "^2.3.0",
     "@maskito/core": "^2.3.0",
     "@maskito/phone": "^3.0.0",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "es-module-shims": "^1.5.12",
@@ -104,8 +109,6 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.14.3",
-    "bcrypt": "^5.1.1",
-    "bcryptjs": "^2.4.3"
+    "zone.js": "~0.14.3"
   }
 }

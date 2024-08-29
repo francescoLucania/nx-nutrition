@@ -29,7 +29,6 @@ import { maskitoDateOptionsGenerator } from '@maskito/kit';
 import { CommonFormControl, GetCommonFormControl } from '../../models/forms/form-control';
 import { BaseInputComponent } from '../base-input/base-input.component';
 import { matchValidator } from '../../validators';
-import { minLength } from 'class-validator';
 import { AuthService, LoginTypes, UserService, ValidationService } from '@nx-nutrition/nutrition-ui-lib';
 
 type RegistrationForm = Record<keyof RegistrationBody, CommonFormControl>;

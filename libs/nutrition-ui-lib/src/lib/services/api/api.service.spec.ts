@@ -1,12 +1,20 @@
 import { TestBed } from '@angular/core/testing';
 
 import { ApiService } from './api.service';
+import { HttpClient, HttpHandler } from '@angular/common/http';
+import { BrowserModule } from '@angular/platform-browser';
 
 describe('ApiService', () => {
   let service: ApiService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [
+        BrowserModule,
+        HttpHandler,
+        HttpClient
+      ]
+    });
     service = TestBed.inject(ApiService);
   });
 
