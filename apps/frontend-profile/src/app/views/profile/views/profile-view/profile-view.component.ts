@@ -8,23 +8,15 @@ import { UserService } from '@nx-nutrition/nutrition-ui-lib';
   imports: [],
   templateUrl: './profile-view.component.html',
   styleUrl: './profile-view.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileViewComponent {
-
   public user$ = this.userService.userProfileData$;
 
-  public user = toSignal(
-    this.user$,
-    {
-      manualCleanup: true,
-      requireSync: true
-    }
-  );
+  public user = toSignal(this.user$, {
+    manualCleanup: true,
+    requireSync: true,
+  });
 
-  constructor(
-    private userService: UserService,
-  ) {
-  }
-
+  constructor(private userService: UserService) {}
 }

@@ -4,15 +4,10 @@ import { RegistrationFormComponent } from '../../components/registration-form/re
 @Component({
   selector: 'nutrition-registration',
   standalone: true,
-  imports: [
-    RegistrationFormComponent
-  ],
+  imports: [RegistrationFormComponent],
   templateUrl: './registration.component.html',
   styleUrl: './registration.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { ngSkipHydration: "true" },
-
+  host: { ngSkipHydration: 'true' },
 })
-export class RegistrationComponent {
-
-}
+export class RegistrationComponent {}

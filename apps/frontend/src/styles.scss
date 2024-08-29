@@ -27,25 +27,25 @@ $transitionBase: 0.4s;
 $transitionLarge: 0.8s;
 
 // palette variables
-$colorBase: #13070C !default;
+$colorBase: #13070c !default;
 $colorLight: rgba($colorBase, 0.8) !default;
 $colorLighter: rgba($colorBase, 0.6) !default;
 $colorLightest: #f2f2f2 !default;
 
-$colorBrand: #16E1A7 !default;
-$colorSound: #319F77 !default;
+$colorBrand: #16e1a7 !default;
+$colorSound: #319f77 !default;
 $colorSoundLight: rgba($colorSound, 0.6) !default;
 $bgColor: #ddc8c4 !default;
 $bgColorMode: #c18c86;
 
-$colorError: #A44F47 !default;
+$colorError: #a44f47 !default;
 
 $accessibilityBorder: #9b3be5 !default;
 $accessibilityBackground: #fef0cc !default;
 $accessibilityColor: $accessibilityBorder !default;
 
 // Dark
-$colorBaseDark: #EEEEEE !default;
+$colorBaseDark: #eeeeee !default;
 $colorLightDark: rgba($colorBaseDark, 0.7) !default;
 $colorLighterDark: rgba($colorBaseDark, 0.6) !default;
 $colorLightestDark: rgba($colorBaseDark, 0.4) !default;
@@ -54,7 +54,7 @@ $colorBrandDark: $colorBrand !default;
 $colorSoundDark: $colorBrand !default;
 $colorSoundLightDark: rgba($colorSound, 0.6) !default;
 $colorSoundDark: $colorSoundLight !default;
-$bgColorDark: #31363F !default;
+$bgColorDark: #31363f !default;
 $bgColorModeDark: rgba($bgColorDark, 0.8);
 
 $colorErrorDark: red !default;
@@ -74,7 +74,6 @@ $accessibilityColorDark: $accessibilityBorder !default;
 
   --fontSizeLarge: #{$fontSizeLarge};
   --lineHeightLarge: #{$lineHeightLarge};
-
 
   --colorBase: #{$colorBase};
   --colorLight: #{$colorLight};
@@ -134,7 +133,6 @@ html[data-theme='dark'] {
   }
 }
 
-
 .text-center {
   text-align: center;
 }
@@ -150,13 +148,11 @@ html[data-theme='dark'] {
   --inputPaddingRightLarge: #{12px};
 }
 
-
 :root {
   --navigateListColorBase: var(--colorBase);
   --navigateListFontWeight: 500;
   --navigateListColorHover: var(--colorBrand);
 }
-
 
 // neo-ui-button
 $buttonBorderWidth: 3px;
@@ -181,7 +177,6 @@ $buttonPaddingLeftLarge: 30px;
 $buttonPaddingRightLarge: 30px;
 
 :root {
-
   // neo-ui-button
   --buttonBorderWidth: #{$buttonBorderWidth};
   --buttonBorderRadius: #{$buttonBorderRadius};
@@ -205,7 +200,6 @@ $buttonPaddingRightLarge: 30px;
   --buttonPaddingRightLarge: #{$buttonPaddingRightLarge};
 }
 
-
 // neo-ui-modal
 $modalPaddingSm: 24px 16px;
 $modalBorderSm: none;
@@ -219,7 +213,6 @@ $modalBorderRadius: none;
 $modalBgColor: #fff;
 
 :root {
-
   --modalPaddingSm: #{$modalPaddingSm};
   --modalBoxShadowSm: #{$modalBoxShadowSm};
   --modalBorderSm: #{$modalBorderSm};
@@ -244,7 +237,6 @@ $navigateListTransition: $transitionSmall;
   --navigateListFontWeight: #{$navigateListFontWeight};
   --navigateListTransition: #{$navigateListTransition};
 }
-
 
 :root {
   --nutrtionIconColorBase: var(--colorBase);

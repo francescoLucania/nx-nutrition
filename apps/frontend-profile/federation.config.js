@@ -1,7 +1,9 @@
-const { withNativeFederation, shareAll } = require('@angular-architects/native-federation/config');
+const {
+  withNativeFederation,
+  shareAll,
+} = require('@angular-architects/native-federation/config');
 
 module.exports = withNativeFederation({
-
   name: 'frontend-profile',
 
   exposes: {
@@ -11,7 +13,11 @@ module.exports = withNativeFederation({
   },
 
   shared: {
-    ...shareAll({ singleton: true, strictVersion: true, requiredVersion: 'auto' }),
+    ...shareAll({
+      singleton: true,
+      strictVersion: true,
+      requiredVersion: 'auto',
+    }),
   },
 
   skip: [
@@ -28,11 +34,10 @@ module.exports = withNativeFederation({
     'nodemailer',
     'mongoose',
     '@nestjs',
-    'nestjs-form-data'
+    'nestjs-form-data',
     // Add further packages you don't need at runtime
-  ]
+  ],
 
   // Please read our FAQ about sharing libs:
   // https://shorturl.at/jmzH0
-
 });

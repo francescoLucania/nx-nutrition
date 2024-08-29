@@ -8,7 +8,7 @@ import { BrowserModule } from '@angular/platform-browser';
 describe('AppComponent', () => {
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
-    value: jest.fn().mockImplementation(query => ({
+    value: jest.fn().mockImplementation((query) => ({
       matches: false,
       media: query,
       onchange: null,
@@ -22,11 +22,7 @@ describe('AppComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [
-        BrowserModule,
-        HttpHandler,
-        HttpClient,
-      ],
+      providers: [BrowserModule, HttpHandler, HttpClient],
       imports: [AppComponent, NxWelcomeComponent, RouterTestingModule],
     }).compileComponents();
   });

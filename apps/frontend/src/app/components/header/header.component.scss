@@ -23,7 +23,6 @@
     }
   }
 
-
   &__navigate-menu {
     display: none;
 
@@ -42,7 +41,7 @@
     color: var(--colorSound);
 
     &:hover {
-       color: var(--colorBrand);
+      color: var(--colorBrand);
     }
 
     @include theme.mq(md) {

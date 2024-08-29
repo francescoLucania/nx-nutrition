@@ -1,1 +1,1 @@
-export type Logout = {action: 'LOGOUT'}
+export type Logout = { action: 'LOGOUT' };

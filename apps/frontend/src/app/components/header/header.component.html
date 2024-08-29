@@ -1,7 +1,6 @@
 <header class="main-header">
   <div class="container">
     <div class="main-header__navigate-grid">
-
       <nav class="main-header__navigate-menu">
         <neo-ui-navigate-list
           [type]="'horizontal'"
@@ -9,37 +8,24 @@
         ></neo-ui-navigate-list>
       </nav>
 
-
       <a [routerLink]="'/'" class="main-header__navigate-logotype">
         Stefanenkova
       </a>
 
-
-
       <div class="main-header__user-menu">
-
         @if (user()) {
-          <div class="mr-16">
-            Здравствуйте <b>{{ user()?.name }}</b>
-          </div>
-        }
-
-        @if (isDesktop()?.deviceType === 'lg') {
-          <neo-ui-button [link]="'profile'">
-            Личный кабинет
-          </neo-ui-button>
+        <div class="mr-16">
+          Здравствуйте <b>{{ user()?.name }}</b>
+        </div>
+        } @if (isDesktop()?.deviceType === 'lg') {
+        <neo-ui-button [link]="'profile'"> Личный кабинет </neo-ui-button>
         } @else {
-          <button type="button">
-            <nutrition-icon
-              [name]="'burger'"
-              [class]="'burger icon--40'"
-            >
-            </nutrition-icon>
-          </button>
+        <button type="button">
+          <nutrition-icon [name]="'burger'" [class]="'burger icon--40'">
+          </nutrition-icon>
+        </button>
         }
-
       </div>
-
     </div>
   </div>
 </header>

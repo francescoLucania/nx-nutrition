@@ -9,7 +9,7 @@ import { provideRouter } from '@angular/router';
 describe('HeaderComponent', () => {
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
-    value: jest.fn().mockImplementation(query => ({
+    value: jest.fn().mockImplementation((query) => ({
       matches: false,
       media: query,
       onchange: null,
@@ -32,11 +32,10 @@ describe('HeaderComponent', () => {
         HttpClient,
         ApiService,
         UserService,
-        provideRouter([])
+        provideRouter([]),
       ],
-      imports: [HeaderComponent]
-    })
-    .compileComponents();
+      imports: [HeaderComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(HeaderComponent);
     component = fixture.componentInstance;

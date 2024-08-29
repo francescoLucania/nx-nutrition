@@ -18,9 +18,8 @@ describe('ProfileViewComponent', () => {
         ApiService,
         UserService,
       ],
-      imports: [ProfileViewComponent]
-    })
-    .compileComponents();
+      imports: [ProfileViewComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ProfileViewComponent);
     component = fixture.componentInstance;

@@ -4,8 +4,8 @@ import { CanActivateFn } from '@angular/router';
 import { userProfileGuard } from './user-profile.guard';
 
 describe('userProfileGuard', () => {
-  const executeGuard: CanActivateFn = (...guardParameters) => 
-      TestBed.runInInjectionContext(() => userProfileGuard(...guardParameters));
+  const executeGuard: CanActivateFn = (...guardParameters) =>
+    TestBed.runInInjectionContext(() => userProfileGuard(...guardParameters));
 
   beforeEach(() => {
     TestBed.configureTestingModule({});

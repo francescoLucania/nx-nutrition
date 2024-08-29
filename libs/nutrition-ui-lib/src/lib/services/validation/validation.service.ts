@@ -5,10 +5,9 @@ import { LoginType } from '@nx-nutrition-models';
 export type LoginTypes = 'phone' | 'email';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ValidationService {
-
   public readonly mask = {
     mobile: [
       '+',
@@ -33,7 +32,8 @@ export class ValidationService {
   };
 
   public readonly pattern = {
-    email: /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu,
+    email:
+      /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu,
     mobile: /^\+7\s\(\d{3}\)\s\d{3}-\d{2}-\d{2}$/,
     firstName:
       "((^[0-9А-ЯЁа-яё IVX()`.'-]+[0-9А-ЯЁа-яё IVX(),`.'-]+[,]?[0-9А-ЯЁа-яё IVX()`.'-]+$)|(^[0-9А-ЯЁа-яё IVX()`.'-]+$))|((^[0-9A-Za-z ()`.'-]+[0-9A-Za-z (),`.'-]+[,]?[0-9A-Za-z ()`.'-]+$)|(^[0-9A-Za-z ()`.'-]+$))",
@@ -53,7 +53,6 @@ export class ValidationService {
     loginFormControl: AbstractControl<string | null>,
     loginTypes: LoginTypes[] = ['phone', 'email']
   ): { idType: LoginType; login: string } | false {
-
     if (!loginFormControl) {
       return false;
     }
@@ -65,7 +64,7 @@ export class ValidationService {
       return false;
     }
 
-    for (const type of  loginTypes) {
+    for (const type of loginTypes) {
       loginType.set(type, true);
     }
 
@@ -82,10 +81,7 @@ export class ValidationService {
 
     login = login?.replace(/\D/g, '');
 
-    if (
-      loginType.has('phone') &&
-      this.regExp['searchPhone'].test(login)
-    ) {
+    if (loginType.has('phone') && this.regExp['searchPhone'].test(login)) {
       return {
         login: login
           ?.replace(this.regExp['searchPhone'], '$1$2$3')

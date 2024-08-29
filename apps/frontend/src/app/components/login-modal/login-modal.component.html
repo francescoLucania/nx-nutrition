@@ -1,61 +1,61 @@
 @if (!isBrowser() || loading()) {
-  <nutrition-throbber></nutrition-throbber>
+<nutrition-throbber></nutrition-throbber>
 } @else {
-  <h3 class="heading-h3 mb-24 text-center">
-    Войти
-  </h3>
+<h3 class="heading-h3 mb-24 text-center">Войти</h3>
 
-  <form *ngIf="form"
-        (ngSubmit)="auth()"
-        [formGroup]="form" style="margin: 0 auto; max-width: 480px"
-  >
-    <div>
-      <div class="mb-4 text-error"
-           *ngIf="!login?.pristine && login?.errors?.required"
-      >
-        Введите логин
-      </div>
-      <div class="mb-4 text-error"
-           *ngIf="!login?.pristine && login?.errors?.error"
-      >
-        {{login?.errors!['error']}}
-      </div>
-      <neo-ui-input
-        [size]="'large'"
-        [formControlName]="'login'"
-        [placeholder]="'Логин'"
-        [autocomplete]="true"
-      >
-      </neo-ui-input>
+<form
+  *ngIf="form"
+  (ngSubmit)="auth()"
+  [formGroup]="form"
+  style="margin: 0 auto; max-width: 480px"
+>
+  <div>
+    <div
+      class="mb-4 text-error"
+      *ngIf="!login?.pristine && login?.errors?.required"
+    >
+      Введите логин
     </div>
+    <div
+      class="mb-4 text-error"
+      *ngIf="!login?.pristine && login?.errors?.error"
+    >
+      {{ (login?.errors)!['error'] }}
+    </div>
+    <neo-ui-input
+      [size]="'large'"
+      [formControlName]="'login'"
+      [placeholder]="'Логин'"
+      [autocomplete]="true"
+    >
+    </neo-ui-input>
+  </div>
 
-    <div class="mt-24">
-      <div class="mb-4 text-error"
-           *ngIf="!login?.pristine && password?.errors?.error"
-      >
-        {{password?.errors?.error}}
-      </div>
-      <neo-ui-input
-        [type]="'password'"
-        [size]="'large'"
-        [formControlName]="'password'"
-        [placeholder]="'Пароль'"
-        [autocomplete]="true"
-      >
-
-      </neo-ui-input>
+  <div class="mt-24">
+    <div
+      class="mb-4 text-error"
+      *ngIf="!login?.pristine && password?.errors?.error"
+    >
+      {{ password?.errors?.error }}
     </div>
-    <div class="mt-24">
-      <neo-ui-button
-        [size]="'large'"
-        [buttonType]="'submit'"
-        [fullWidth]="true"
-      >
-        Войти
-      </neo-ui-button>
-    </div>
-    <div class="text-center mt-32">
-      <a [routerLink]="'registration'" (click)="closeModal()">Зарегистрироваться</a>
-    </div>
-  </form>
+    <neo-ui-input
+      [type]="'password'"
+      [size]="'large'"
+      [formControlName]="'password'"
+      [placeholder]="'Пароль'"
+      [autocomplete]="true"
+    >
+    </neo-ui-input>
+  </div>
+  <div class="mt-24">
+    <neo-ui-button [size]="'large'" [buttonType]="'submit'" [fullWidth]="true">
+      Войти
+    </neo-ui-button>
+  </div>
+  <div class="text-center mt-32">
+    <a [routerLink]="'registration'" (click)="closeModal()"
+      >Зарегистрироваться</a
+    >
+  </div>
+</form>
 }

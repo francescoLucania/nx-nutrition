@@ -5,7 +5,14 @@ import {
   Get,
   Param,
   Post,
-  HttpException, HttpStatus, Query, UsePipes, UseInterceptors, UploadedFiles, Req, UseGuards
+  HttpException,
+  HttpStatus,
+  Query,
+  UsePipes,
+  UseInterceptors,
+  UploadedFiles,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -15,12 +22,9 @@ import { UserDto } from './dto/user-public.dto';
 import { AuthGuard } from '../guards/auth/auth';
 import { LoginBody } from '@nx-nutrition-models';
 
-
 @Controller('/user')
 export class UserController {
-
-  constructor(private userService: UserService) {
-  }
+  constructor(private userService: UserService) {}
 
   @UsePipes(ValidationPipe)
   @Post('/create')
@@ -30,7 +34,7 @@ export class UserController {
   public async create(
     // @UploadedFiles() avatar,
     @Body() dto: CreateUserDto,
-    @Response() response,
+    @Response() response
   ) {
     // const picture = avatar?.avatar[0];
     const user = await this.userService.create({
@@ -41,23 +45,14 @@ export class UserController {
 
   @UsePipes(ValidationPipe)
   @Post('/uploadAvatar')
-  @UseInterceptors(FileFieldsInterceptor([
-    { name: 'avatar', maxCount: 1 },
-  ]))
-  public async uploadAvatar(
-    @UploadedFiles() avatar,
-    @Response() res,
-  ) {
-
-    const userData = { avatar: '...' }
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'avatar', maxCount: 1 }]))
+  public async uploadAvatar(@UploadedFiles() avatar, @Response() res) {
+    const userData = { avatar: '...' };
     return res.send(userData);
   }
 
   @Get('/activate')
-  public async activate(
-    @Query() query: {id: string},
-    @Response() res,
-  ) {
+  public async activate(@Query() query: { id: string }, @Response() res) {
     try {
       const user = await this.userService.activate(query.id);
       return res.send({
@@ -66,55 +61,47 @@ export class UserController {
           name: user.name,
           fullName: user.fullName,
           email: user.email,
-        }
+        },
       });
     } catch (e) {
-      throw new HttpException({
-        status: e.status,
-        error: e.message,
-      }, HttpStatus.FORBIDDEN, {
-        cause: e
-      });
+      throw new HttpException(
+        {
+          status: e.status,
+          error: e.message,
+        },
+        HttpStatus.FORBIDDEN,
+        {
+          cause: e,
+        }
+      );
     }
   }
 
   @UsePipes(ValidationPipe)
   @Post('/login')
-  public async login(
-    @Body() body: LoginBody,
-    @Response() response: UserDto
-    ) {
+  public async login(@Body() body: LoginBody, @Response() response: UserDto) {
     const user = await this.userService.login(body);
 
     this.setRefreshToken(response, user).send(user);
   }
 
   @Get('/logout')
-  public async logout(
-    @Req() request,
-    @Response() response,
-    ) {
+  public async logout(@Req() request, @Response() response) {
     await this.userService.logout(request.cookies.refreshToken);
     response.clearCookie('refreshToken');
-    return response.send({action: 'LOGOUT'});
+    return response.send({ action: 'LOGOUT' });
   }
 
   @Get('/refresh')
-  public async refresh(
-    @Req() request,
-    @Response() response,
-    ) {
+  public async refresh(@Req() request, @Response() response) {
     const user = await this.userService.refresh(request.cookies.refreshToken);
 
     this.setRefreshToken(response, user).send(user);
   }
-  1231231232
+  1231231232;
   @UseGuards(AuthGuard)
   @Get('/getUserData')
-  public async  getUserData(
-    @Req() request,
-    @Response() response,
-  ) {
+  public async getUserData(@Req() request, @Response() response) {
     const token = request?.headers['authorization']?.split(' ')?.[1];
     const userData = await this.userService.getUserData(token);
     response.send(userData);
@@ -122,7 +109,10 @@ export class UserController {
 
   private setRefreshToken(response: any, user: UserDto): any {
     if (user?.refreshToken) {
-      return response.cookie('refreshToken', user.refreshToken, {maxAge: 30 * 24 * 60 * 100, httpOnly: true});
+      return response.cookie('refreshToken', user.refreshToken, {
+        maxAge: 30 * 24 * 60 * 100,
+        httpOnly: true,
+      });
     }
 
     return response;

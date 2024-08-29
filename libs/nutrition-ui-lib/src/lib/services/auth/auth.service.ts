@@ -7,11 +7,12 @@ import { UserAuthState } from '../../models';
 import { Logout } from '../../../../../../models/user/logout';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private accessToken: string | undefined;
-  private _isLoggedIn$: BehaviorSubject<UserAuthState> = new BehaviorSubject<UserAuthState>('processing');
+  private _isLoggedIn$: BehaviorSubject<UserAuthState> =
+    new BehaviorSubject<UserAuthState>('processing');
   private isRefreshing = false;
 
   public set setAccessToken(value: string) {
@@ -34,24 +35,25 @@ export class AuthService {
 
   constructor(
     private browserService: BrowserService,
-    private apiService: ApiService,
-  ) { }
+    private apiService: ApiService
+  ) {}
 
   public buildRequest(req: HttpRequest<any>): HttpRequest<any> {
-    const setHeaders = this.getAccessToken ? {
-      'Authorization': `Bearer ${this.getAccessToken}`,
-    } : undefined;
+    const setHeaders = this.getAccessToken
+      ? {
+          Authorization: `Bearer ${this.getAccessToken}`,
+        }
+      : undefined;
 
     req = req.clone({
       withCredentials: true,
-      setHeaders
+      setHeaders,
     });
 
     return req;
   }
 
   public refreshToken$(): Observable<any> {
-
     if (!this.isRefreshing) {
       this.updateIsLoggedIn = 'processing';
       this.isRefreshing = true;
@@ -61,21 +63,19 @@ export class AuthService {
       return EMPTY;
     }
 
-    return this.apiService.getRequest('user/refresh')
-      .pipe(
-        tap(() => {
-          this.updateIsLoggedIn = 'done';
-        }),
-      );
+    return this.apiService.getRequest('user/refresh').pipe(
+      tap(() => {
+        this.updateIsLoggedIn = 'done';
+      })
+    );
   }
 
   public auth$<Body>(body: Body): Observable<any> {
-    return this.apiService.postRequest('user/login', body)
-      .pipe(
-        tap(() => {
-          this.updateIsLoggedIn = 'done';
-        }),
-      );
+    return this.apiService.postRequest('user/login', body).pipe(
+      tap(() => {
+        this.updateIsLoggedIn = 'done';
+      })
+    );
   }
 
   public logout$(): Observable<Logout> {

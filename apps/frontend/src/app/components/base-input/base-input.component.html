@@ -1,42 +1,32 @@
-@if (
-  size &&
-  control &&
-  placeholder &&
-  autocomplete &&
-  ariaLabel
-  ) {
+@if ( size && control && placeholder && autocomplete && ariaLabel ) {
 
-  <ng-container *ngIf="error()?.error">
-    <div class="mb-4 text-error">
-      {{error()?.error}}
-    </div>
-  </ng-container>
+<ng-container *ngIf="error()?.error">
+  <div class="mb-4 text-error">
+    {{ error()?.error }}
+  </div>
+</ng-container>
 
-  @if (maskitoOptions) {
-    <neo-ui-input
-      [maskitoOptions]="maskitoOptions"
-      [formControl]="$any(control)"
-      [size]="size"
-      [placeholder]="placeholder"
-      [autocomplete]="autocomplete"
-      [ariaLabel]="ariaLabel"
-      [name]="name"
-      [type]="type"
-    >
-    </neo-ui-input>
-  } @else {
-    <neo-ui-input
-      [formControl]="$any(control)"
-      [size]="size"
-      [placeholder]="placeholder"
-      [autocomplete]="autocomplete"
-      [ariaLabel]="ariaLabel"
-      [name]="name"
-      [type]="type"
-    >
-    </neo-ui-input>
-  }
-}
-
-
-
+@if (maskitoOptions) {
+<neo-ui-input
+  [maskitoOptions]="maskitoOptions"
+  [formControl]="$any(control)"
+  [size]="size"
+  [placeholder]="placeholder"
+  [autocomplete]="autocomplete"
+  [ariaLabel]="ariaLabel"
+  [name]="name"
+  [type]="type"
+>
+</neo-ui-input>
+} @else {
+<neo-ui-input
+  [formControl]="$any(control)"
+  [size]="size"
+  [placeholder]="placeholder"
+  [autocomplete]="autocomplete"
+  [ariaLabel]="ariaLabel"
+  [name]="name"
+  [type]="type"
+>
+</neo-ui-input>
+} }

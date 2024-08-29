@@ -12,9 +12,8 @@ export const userProfileGuard: CanActivateFn = (route, state) => {
     return true;
   } else {
     modalService.open(LoginModalComponent, undefined, {
-      route: route?.routeConfig?.path
+      route: route?.routeConfig?.path,
     });
   }
   return false;
-
 };

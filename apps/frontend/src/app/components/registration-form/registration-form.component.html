@@ -1,38 +1,31 @@
 @if (!isBrowser) {
-  <ng-template [ngTemplateOutlet]="registrationFormTemplate"></ng-template>
+<ng-template [ngTemplateOutlet]="registrationFormTemplate"></ng-template>
 } @else {
 
-  <h1 class="heading-h1 text-center">
-    @if (state() !== 'complete-view') {
-      Регистрация
-    } @else {
-      <h4 class="heading-h1">
-        Спасибо за регистрацию!
-      </h4>
-    }
-
-  </h1>
-  <div class="mt-48">
-    @switch (state()) {
-      @case ('processing') {
-        <nutrition-throbber></nutrition-throbber>
-      }
-      @case ('registration-form') {
-        <ng-template [ngTemplateOutlet]="registrationFormTemplate"></ng-template>
-      }
-      @case ('password-form') {
-        <ng-template [ngTemplateOutlet]="passwordFormTemplate"></ng-template>
-      }
-      @case ('complete-view') {
-        <ng-template [ngTemplateOutlet]="completeView"></ng-template>
-      }
-    }
-  </div>
+<h1 class="heading-h1 text-center">
+  @if (state() !== 'complete-view') { Регистрация } @else {
+  <h4 class="heading-h1">Спасибо за регистрацию!</h4>
+  }
+</h1>
+<div class="mt-48">
+  @switch (state()) { @case ('processing') {
+  <nutrition-throbber></nutrition-throbber>
+  } @case ('registration-form') {
+  <ng-template [ngTemplateOutlet]="registrationFormTemplate"></ng-template>
+  } @case ('password-form') {
+  <ng-template [ngTemplateOutlet]="passwordFormTemplate"></ng-template>
+  } @case ('complete-view') {
+  <ng-template [ngTemplateOutlet]="completeView"></ng-template>
+  } }
+</div>
 }
 
-
 <ng-template #registrationFormTemplate>
-  <form class="registration-form" *ngIf="registrationForm" [formGroup]="registrationForm">
+  <form
+    class="registration-form"
+    *ngIf="registrationForm"
+    [formGroup]="registrationForm"
+  >
     <div>
       <nutrition-base-input
         *ngIf="name"
@@ -83,10 +76,8 @@
     </div>
 
     <div class="mt-24">
-      <div class="mb-4 text-error"
-           *ngIf="dateIssue?.errors?.error"
-      >
-        {{dateIssue?.errors!['error']}}
+      <div class="mb-4 text-error" *ngIf="dateIssue?.errors?.error">
+        {{ (dateIssue?.errors)!['error'] }}
       </div>
       <neo-ui-input
         [maskitoOptions]="dateMask"
@@ -98,17 +89,18 @@
       </neo-ui-input>
 
       <div class="mt-24">
-
-        <h5 class="heading-h5">Укажите пол
-          <span class="mb-4 text-error text-base-small"
-               *ngIf="gender?.errors?.error"
+        <h5 class="heading-h5">
+          Укажите пол
+          <span
+            class="mb-4 text-error text-base-small"
+            *ngIf="gender?.errors?.error"
           >
-            (<b>{{gender?.errors?.error}}</b>)
+            (<b>{{ gender?.errors?.error }}</b
+            >)
           </span>
           :
         </h5>
         <div class="registration-form__input-grid mt-8">
-
           <div class="registration-form__input-grid-col">
             <neo-ui-radio
               [label]="'Мужской'"
@@ -124,7 +116,6 @@
               [formControlName]="'gender'"
             ></neo-ui-radio>
           </div>
-
         </div>
       </div>
     </div>
@@ -142,7 +133,11 @@
 </ng-template>
 
 <ng-template #passwordFormTemplate>
-  <form class="registration-form" *ngIf="passwordForm" [formGroup]="passwordForm">
+  <form
+    class="registration-form"
+    *ngIf="passwordForm"
+    [formGroup]="passwordForm"
+  >
     <div>
       <nutrition-base-input
         *ngIf="password"
@@ -168,7 +163,10 @@
       ></nutrition-base-input>
     </div>
 
-    <div class="mt-4 text-error" *ngIf="passwordForm?.dirty && passwordForm?.errors?.notMatch">
+    <div
+      class="mt-4 text-error"
+      *ngIf="passwordForm?.dirty && passwordForm?.errors?.notMatch"
+    >
       Пароли не совпадают
     </div>
     <div class="mt-24">
@@ -188,10 +186,9 @@
 <ng-template #completeView>
   <div class="text-center">
     <div class="mt-24">
-      Для возможности пользоваться личным кабинетом нужно подтвердить адрес электронной почты.
-      Ссылка для подтверждения была отправлена на адрес: <b class="color-brand">{{ email?.value }}</b>
+      Для возможности пользоваться личным кабинетом нужно подтвердить адрес
+      электронной почты. Ссылка для подтверждения была отправлена на адрес:
+      <b class="color-brand">{{ email?.value }}</b>
     </div>
   </div>
 </ng-template>
-
-

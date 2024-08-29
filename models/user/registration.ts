@@ -8,7 +8,7 @@ export type RegistrationBody = {
   gender: string;
   dateIssue: string;
   password: string;
-}
+};
 
 export type Gender = 'make' | 'female';
 
@@ -29,12 +29,12 @@ export enum RegistrationErrors {
 
 export type RegistrationError = HttpErrorResponse & {
   error: {
-    message: RegistrationErrors
-  }
-}
+    message: RegistrationErrors;
+  };
+};
 
 export type CreateResponse = {
   email: string;
   id: string;
-  isActivated: boolean
-}
+  isActivated: boolean;
+};

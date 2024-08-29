@@ -11,15 +11,9 @@ describe('RegistrationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [
-        BrowserService,
-        HttpHandler,
-        HttpClient,
-        ApiService,
-      ],
-      imports: [RegistrationComponent]
-    })
-    .compileComponents();
+      providers: [BrowserService, HttpHandler, HttpClient, ApiService],
+      imports: [RegistrationComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(RegistrationComponent);
     component = fixture.componentInstance;

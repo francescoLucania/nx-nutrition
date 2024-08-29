@@ -1,5 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ButtonStandaloneComponent, InputStandaloneComponent } from 'ngx-neo-ui';
+import {
+  ButtonStandaloneComponent,
+  InputStandaloneComponent,
+} from 'ngx-neo-ui';
 import { AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -12,12 +15,10 @@ import { RouterLink } from '@angular/router';
     ButtonStandaloneComponent,
     ReactiveFormsModule,
     NgIf,
-    RouterLink
+    RouterLink,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HomeComponent {
-
-}
+export class HomeComponent {}

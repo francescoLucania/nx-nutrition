@@ -1,8 +1,6 @@
 @use 'ngx-neo-ui/assets/styles/theme-provider/theme_provider' as theme;
-@use 'ngx-neo-ui/assets/styles/theme-provider/base-styles/typography/typography' as typography;
-
-
-
+@use 'ngx-neo-ui/assets/styles/theme-provider/base-styles/typography/typography'
+  as typography;
 
 .home-promo {
   @include theme.mq(lg) {
@@ -77,5 +75,3 @@
     }
   }
 }
-
-

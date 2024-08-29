@@ -1,5 +1,3 @@
-
-
 svg {
   vertical-align: top;
 }
@@ -7,8 +5,7 @@ svg {
 .icon {
   fill: var(--nutrtionIconColorBase);
   fill-rule: evenodd;
-  transition: fill var(--transitionSmall),
-  transform var(--transitionSmall);
+  transition: fill var(--transitionSmall), transform var(--transitionSmall);
 
   &:hover {
     fill: var(--nutrtionIconColorHover);

@@ -5,8 +5,10 @@ import {
   Host,
   Input,
   OnInit,
-  Optional, signal,
-  SkipSelf, WritableSignal
+  Optional,
+  signal,
+  SkipSelf,
+  WritableSignal,
 } from '@angular/core';
 import { MaskitoOptions } from '@maskito/core';
 import { JsonPipe, KeyValuePipe, NgForOf, NgIf } from '@angular/common';
@@ -14,7 +16,8 @@ import {
   ControlContainer,
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
-  ReactiveFormsModule, ValidationErrors
+  ReactiveFormsModule,
+  ValidationErrors,
 } from '@angular/forms';
 import { InputStandaloneComponent } from 'ngx-neo-ui';
 
@@ -27,7 +30,7 @@ import { InputStandaloneComponent } from 'ngx-neo-ui';
     JsonPipe,
     ReactiveFormsModule,
     KeyValuePipe,
-    NgForOf
+    NgForOf,
   ],
   providers: [
     {
@@ -37,10 +40,9 @@ import { InputStandaloneComponent } from 'ngx-neo-ui';
     },
   ],
   templateUrl: './base-input.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BaseInputComponent implements ControlValueAccessor, OnInit {
-
   @Input() public size: 'small' | 'base' | 'large' = 'large';
   @Input() public label: string | undefined = undefined;
   @Input() public value: string | undefined = undefined;
@@ -56,7 +58,8 @@ export class BaseInputComponent implements ControlValueAccessor, OnInit {
     this.error.set(value);
   }
 
-  public error: WritableSignal<ValidationErrors | null | undefined> = signal(undefined);
+  public error: WritableSignal<ValidationErrors | null | undefined> =
+    signal(undefined);
   public control = this.controlContainer?.control?.get(this.formControlName);
 
   private onChange: (value: unknown) => void = () => null;
@@ -67,7 +70,6 @@ export class BaseInputComponent implements ControlValueAccessor, OnInit {
   ) {}
 
   ngOnInit() {
-
     if (this.controlContainer && this.formControlName) {
       this.control = this.controlContainer?.control?.get(this.formControlName)
         ? this.controlContainer?.control?.get(this.formControlName)
@@ -77,10 +79,9 @@ export class BaseInputComponent implements ControlValueAccessor, OnInit {
     }
   }
 
-  public writeValue(value: any) {
-  }
+  public writeValue(value: any) {}
   public registerOnTouched(fn: (value: unknown) => void) {
-    this.onTouch = fn
+    this.onTouch = fn;
   }
   public registerOnChange(fn: (value: unknown) => void): void {
     this.onChange = fn;

@@ -6,37 +6,37 @@ export type UserDocument = User & Document;
 
 @Schema()
 export class User {
-  @Prop({unique: true, required: true})
+  @Prop({ unique: true, required: true })
   email: string;
 
-  @Prop({required: true})
+  @Prop({ required: true })
   password: string;
 
-  @Prop({unique: true, required: true})
+  @Prop({ unique: true, required: true })
   phone: string;
 
-  @Prop({required: true})
+  @Prop({ required: true })
   name: string;
 
-  @Prop({required: true})
+  @Prop({ required: true })
   fullName: string;
 
-  @Prop({type: String, required: true})
+  @Prop({ type: String, required: true })
   gender: Gender;
 
-  @Prop({required: true})
+  @Prop({ required: true })
   dateIssue: string;
 
-  @Prop({required: true})
+  @Prop({ required: true })
   created: string;
 
-  @Prop({required: true})
+  @Prop({ required: true })
   lastActivity: string;
 
-  @Prop({required: true, default: false})
+  @Prop({ required: true, default: false })
   isActivated: boolean;
 
-  @Prop({unique: false, required: false})
+  @Prop({ unique: false, required: false })
   activationLink: string;
 
   _id: mongoose.Types.ObjectId;

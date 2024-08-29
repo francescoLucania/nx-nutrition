@@ -18,9 +18,8 @@ describe('RegistrationFormComponent', () => {
         ApiService,
         UserService,
       ],
-      imports: [RegistrationFormComponent]
-    })
-    .compileComponents();
+      imports: [RegistrationFormComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(RegistrationFormComponent);
     component = fixture.componentInstance;
@@ -28,7 +27,7 @@ describe('RegistrationFormComponent', () => {
 
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
-      value: jest.fn().mockImplementation(query => ({
+      value: jest.fn().mockImplementation((query) => ({
         matches: false,
         media: query,
         onchange: null,

@@ -1,1 +1,1 @@
-export * from './match/match'
+export * from './match/match';

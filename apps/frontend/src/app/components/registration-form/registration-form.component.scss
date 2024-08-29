@@ -1,7 +1,6 @@
 @use 'ngx-neo-ui/assets/styles/theme-provider/theme_provider' as theme;
 
 .registration-form {
-
   &__input-grid {
     @include theme.mq(md) {
       display: flex;

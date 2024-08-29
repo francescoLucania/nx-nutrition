@@ -16,19 +16,17 @@ import { LoginBody, LoginType, UserProfile } from '@nx-nutrition-models';
 
 @Injectable()
 export class UserService {
-
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private fileService: FileService,
     private mailService: MailService,
     private tokenService: TokenService,
-    private configService: ConfigService,
-  ) {
-  }
+    private configService: ConfigService
+  ) {}
 
   async create(dto: CreateUserDto): Promise<UserDto> {
-    const searchByEmail = await this.searchUserInModel({email: dto.email});
-    const searchByPhone = await this.searchUserInModel({phone: dto.phone});
+    const searchByEmail = await this.searchUserInModel({ email: dto.email });
+    const searchByPhone = await this.searchUserInModel({ phone: dto.phone });
     const user = searchByEmail || searchByPhone;
     if (!user) {
       let picturePath;
@@ -36,25 +34,27 @@ export class UserService {
 
       const activationLink = uuidv4();
       const date = new Date();
-      const creatUser = await this.userModel.create(
-        {
-          ...dto,
-          listens: 0,
-          picture: picturePath ? picturePath : 'unknown.jpg',
-          activationLink: activationLink,
-          lastActivity: date,
-          created: date,
-        })
-
+      const creatUser = await this.userModel.create({
+        ...dto,
+        listens: 0,
+        picture: picturePath ? picturePath : 'unknown.jpg',
+        activationLink: activationLink,
+        lastActivity: date,
+        created: date,
+      });
 
       this.mailService.sendActivationMail(
         dto.email,
-        `${this.configService.get('DOMAIN')}/api/user/activate?id=${activationLink}`
+        `${this.configService.get(
+          'DOMAIN'
+        )}/api/user/activate?id=${activationLink}`
       );
 
       return await this.buildUserAuthData(new UserDto(creatUser));
     } else {
-      throw new ValidationException(searchByPhone ? 'BUSY_PHONE' : 'BUSY_EMAIL')
+      throw new ValidationException(
+        searchByPhone ? 'BUSY_PHONE' : 'BUSY_EMAIL'
+      );
     }
   }
 
@@ -63,16 +63,16 @@ export class UserService {
   }
 
   async login(body: LoginBody): Promise<UserDto> {
+    const { login, password, loginType } = body;
 
-    const {login, password, loginType} = body;
-
-    const user = loginType === 'email' ?
-      await this.searchUserInModel({email: login}) :
-      await this.searchUserInModel({phone: login})
+    const user =
+      loginType === 'email'
+        ? await this.searchUserInModel({ email: login })
+        : await this.searchUserInModel({ phone: login });
 
     if (user) {
       if (!(await this.loginPasswordEquals(user, password))) {
-        throw new ValidationException(`BAD_PASSWORD`)
+        throw new ValidationException(`BAD_PASSWORD`);
       } else if (user.isActivated) {
         user.lastActivity = new Date().toString();
         // @ts-ignore
@@ -101,8 +101,8 @@ export class UserService {
       gender,
       dateIssue,
       created,
-      lastActivity
-    } = user
+      lastActivity,
+    } = user;
 
     return {
       email,
@@ -113,26 +113,28 @@ export class UserService {
       dateIssue,
       created,
       lastActivity,
-    }
+    };
   }
 
   private async buildUserAuthData(user: UserDto, authData = false) {
-    const tokens = this.tokenService.generateTokens({...user});
+    const tokens = this.tokenService.generateTokens({ ...user });
 
     if (authData) {
-
       await this.tokenService.saveToken(user.id, tokens);
 
       return {
         ...user,
-        ...tokens
-      }
+        ...tokens,
+      };
     }
 
-    return {accessToken: tokens.accessToken, ...user,}
+    return { accessToken: tokens.accessToken, ...user };
   }
 
-  private async loginPasswordEquals(user: User, password: string): Promise<boolean> {
+  private async loginPasswordEquals(
+    user: User,
+    password: string
+  ): Promise<boolean> {
     const result = await bcrypt.compare(password, user.password);
     return result;
   }
@@ -142,35 +144,40 @@ export class UserService {
   }
 
   async refresh(refreshToken: string): Promise<UserDto> {
-
     if (refreshToken) {
       const user = await this.getUserByToken('REFRESH_TOKEN', refreshToken);
       if (user) {
-        return this.buildUserAuthData(new UserDto(user))
+        return this.buildUserAuthData(new UserDto(user));
       }
     }
-    throw new UnauthorizedException('BAD_TOKEN')
+    throw new UnauthorizedException('BAD_TOKEN');
   }
 
   async activate(link: string): Promise<User> {
-    const activatedCandidate = await this.userModel.findOne({activationLink: link});
+    const activatedCandidate = await this.userModel.findOne({
+      activationLink: link,
+    });
     if (activatedCandidate) {
       activatedCandidate['isActivated'] = true;
       activatedCandidate['activationLink'] = null;
     } else {
-      throw new Error('INCORRECT_LINK')
+      throw new Error('INCORRECT_LINK');
     }
 
     return await activatedCandidate.save();
   }
 
-  private async searchUserInModel(searchParam: Partial<CreateUserDto>): Promise<User | null> {
+  private async searchUserInModel(
+    searchParam: Partial<CreateUserDto>
+  ): Promise<User | null> {
     const user = await this.userModel.findOne(searchParam);
-    return user ? user : null
+    return user ? user : null;
   }
 
-
-  private async getUserByToken(type: TokenType, token: string): Promise<UserDocument> {
+  private async getUserByToken(
+    type: TokenType,
+    token: string
+  ): Promise<UserDocument> {
     const validToken = this.tokenService.validateToken(type, token);
 
     if (validToken) {

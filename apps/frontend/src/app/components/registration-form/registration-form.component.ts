@@ -4,12 +4,19 @@ import {
   Component,
   OnInit,
   signal,
-  WritableSignal
+  WritableSignal,
 } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { takeUntil } from 'rxjs';
 import {
-  BrowserService, ButtonStandaloneComponent,
+  BrowserService,
+  ButtonStandaloneComponent,
   DestroyService,
   InputStandaloneComponent,
   ModalService,
@@ -18,7 +25,7 @@ import {
 import {
   RegistrationBody,
   RegistrationError,
-  RegistrationErrors
+  RegistrationErrors,
 } from '@nx-nutrition-models';
 import { Router } from '@angular/router';
 import { ThrobberComponent } from '../throbber/throbber.component';
@@ -26,15 +33,23 @@ import { JsonPipe, NgIf, NgTemplateOutlet } from '@angular/common';
 import { MASKITO_DEFAULT_OPTIONS, MaskitoOptions } from '@maskito/core';
 import { maskitoPhoneOptionsGenerator } from '@maskito/phone';
 import { maskitoDateOptionsGenerator } from '@maskito/kit';
-import { CommonFormControl, GetCommonFormControl } from '../../models/forms/form-control';
+import {
+  CommonFormControl,
+  GetCommonFormControl,
+} from '../../models/forms/form-control';
 import { BaseInputComponent } from '../base-input/base-input.component';
 import { matchValidator } from '../../validators';
-import { AuthService, LoginTypes, UserService, ValidationService } from '@nx-nutrition/nutrition-ui-lib';
+import {
+  AuthService,
+  LoginTypes,
+  UserService,
+  ValidationService,
+} from '@nx-nutrition/nutrition-ui-lib';
 
 type RegistrationForm = Record<keyof RegistrationBody, CommonFormControl>;
 type PasswordForm = {
-  password: CommonFormControl,
-  replayPassword: CommonFormControl,
+  password: CommonFormControl;
+  replayPassword: CommonFormControl;
 };
 
 @Component({
@@ -49,14 +64,12 @@ type PasswordForm = {
     RadioStandaloneComponent,
     ButtonStandaloneComponent,
     BaseInputComponent,
-    JsonPipe
+    JsonPipe,
   ],
-  providers: [
-    DestroyService
-  ],
+  providers: [DestroyService],
   templateUrl: './registration-form.component.html',
   styleUrl: './registration-form.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationFormComponent implements OnInit {
   private emailForActivation: string | undefined = undefined;
@@ -90,10 +103,7 @@ export class RegistrationFormComponent implements OnInit {
   public isBrowser = false;
 
   public state: WritableSignal<
-    'processing' |
-    'registration-form' |
-    'password-form' |
-    'complete-view'
+    'processing' | 'registration-form' | 'password-form' | 'complete-view'
   > = signal('registration-form');
 
   public registrationForm: FormGroup<RegistrationForm> | undefined;
@@ -108,7 +118,7 @@ export class RegistrationFormComponent implements OnInit {
     fullName: 'Введите ФИО',
     dateIssue: 'Введите дату рождения',
     gender: 'Обязательное поле',
-  }
+  };
 
   constructor(
     private userService: UserService,
@@ -118,9 +128,8 @@ export class RegistrationFormComponent implements OnInit {
     private destroy$: DestroyService,
     private modalService: ModalService,
     private validationService: ValidationService,
-    private router: Router,
-  ) {
-  }
+    private router: Router
+  ) {}
 
   public ngOnInit(): void {
     this.modalService.close();
@@ -130,9 +139,7 @@ export class RegistrationFormComponent implements OnInit {
   private initState(): void {
     this.isBrowser = this.browserService.isBrowser;
     this.authService.isLoggedIn$
-      .pipe(
-        takeUntil(this.destroy$),
-      )
+      .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         switch (value) {
           case 'processing':
@@ -147,12 +154,11 @@ export class RegistrationFormComponent implements OnInit {
             this.modalService.close();
             break;
         }
-        this.cdr.detectChanges()
-      })
+        this.cdr.detectChanges();
+      });
   }
 
   private initForm(): void {
-
     this.registrationForm = new FormGroup<RegistrationForm>({
       email: new FormControl(null),
       phone: new FormControl(null),
@@ -163,20 +169,18 @@ export class RegistrationFormComponent implements OnInit {
       password: new FormControl(null),
     });
 
-    this.passwordForm = new FormGroup<PasswordForm>({
-      password: new FormControl(null, [
-        Validators.minLength(8),
-        Validators.maxLength(16),
-      ]),
-      replayPassword: new FormControl(null),
-    },
+    this.passwordForm = new FormGroup<PasswordForm>(
       {
-        validators: matchValidator(
-          'password',
-          'replayPassword'
-        )
+        password: new FormControl(null, [
+          Validators.minLength(8),
+          Validators.maxLength(16),
+        ]),
+        replayPassword: new FormControl(null),
+      },
+      {
+        validators: matchValidator('password', 'replayPassword'),
       }
-      );
+    );
 
     this.initMask();
   }
@@ -198,8 +202,9 @@ export class RegistrationFormComponent implements OnInit {
 
   public continue() {
     const validationValues = this.validateRegistrationForm();
-    const errorsFields = [...validationValues.entries()]
-      .filter(item => !item[1]);
+    const errorsFields = [...validationValues.entries()].filter(
+      (item) => !item[1]
+    );
 
     if (!errorsFields.length && this.registrationForm?.valid) {
       this.state.set('password-form');
@@ -208,19 +213,28 @@ export class RegistrationFormComponent implements OnInit {
         const fieldName = error[0];
 
         this.setErrorsRegistrationForm(fieldName, {
-          error: this.errorMessages[fieldName]
-        })
+          error: this.errorMessages[fieldName],
+        });
       }
 
       this.cdr.detectChanges();
     }
   }
 
-  private validateRegistrationForm(): Map<Exclude<keyof RegistrationForm, 'password'>, boolean> {
+  private validateRegistrationForm(): Map<
+    Exclude<keyof RegistrationForm, 'password'>,
+    boolean
+  > {
     const values = new Map();
 
-    values.set('email', this.email && this.validateContact(this.email, 'email'));
-    values.set('phone', this.email && this.validateContact(this.phone, 'phone'));
+    values.set(
+      'email',
+      this.email && this.validateContact(this.email, 'email')
+    );
+    values.set(
+      'phone',
+      this.email && this.validateContact(this.phone, 'phone')
+    );
     values.set('name', this.validationTextField(this.name));
     values.set('fullName', this.validationTextField(this.fullName));
     values.set('dateIssue', this.validationTextField(this.dateIssue));
@@ -238,9 +252,12 @@ export class RegistrationFormComponent implements OnInit {
     return false;
   }
 
-  private validateContact(contact: GetCommonFormControl, type: LoginTypes): boolean {
+  private validateContact(
+    contact: GetCommonFormControl,
+    type: LoginTypes
+  ): boolean {
     if (contact) {
-      const result = this.validationService.formatLogin(contact, [type])
+      const result = this.validationService.formatLogin(contact, [type]);
       return result ? result.idType === type : false;
     }
 
@@ -248,23 +265,21 @@ export class RegistrationFormComponent implements OnInit {
   }
 
   public registration() {
-
     if (this.validPasswordForm()) {
       this.setPasswordFormRegistration();
 
       if (this.registrationForm?.valid) {
-        this.registration$().pipe(
-          takeUntil(this.destroy$),
-        )
+        this.registration$()
+          .pipe(takeUntil(this.destroy$))
           .subscribe({
             next: (data) => {
-              this.emailForActivation = data.email
-              this.state.set('complete-view')
+              this.emailForActivation = data.email;
+              this.state.set('complete-view');
             },
             error: (error: RegistrationError) => {
               this.handleRegistrationError(error);
-            }
-          })
+            },
+          });
       } else {
         this.state.set('registration-form');
       }
@@ -272,11 +287,9 @@ export class RegistrationFormComponent implements OnInit {
   }
 
   private validPasswordForm() {
-    if (
-      this.password?.errors?.minlength ||
-      this.password?.errors?.maxlength) {
+    if (this.password?.errors?.minlength || this.password?.errors?.maxlength) {
       this.password.setErrors({
-        error: 'Пароль должен содержать не менее 8 и не более 16 символов '
+        error: 'Пароль должен содержать не менее 8 и не более 16 символов ',
       });
 
       this.cdr.detectChanges();
@@ -290,56 +303,57 @@ export class RegistrationFormComponent implements OnInit {
   private handleRegistrationError(error: RegistrationError) {
     switch (error.error.message) {
       case RegistrationErrors.BusyEmail:
-        this.registrationError('email',
-          {
-            error: 'Пользователь c такой почтой уже существует',
-          })
+        this.registrationError('email', {
+          error: 'Пользователь c такой почтой уже существует',
+        });
         break;
       case RegistrationErrors.BusyPhone:
-        this.registrationError('phone',
-          {
-            error: 'Пользователь c таким номером телефона уже существует',
-          })
+        this.registrationError('phone', {
+          error: 'Пользователь c таким номером телефона уже существует',
+        });
         break;
       case RegistrationErrors.NotRussiaPhone:
-        this.registrationError('phone',
-          {
-            error: 'Нужно ввести номер российского мобильного оператора',
-          })
+        this.registrationError('phone', {
+          error: 'Нужно ввести номер российского мобильного оператора',
+        });
     }
   }
 
-  private registrationError(name: keyof RegistrationForm, errors: ValidationErrors) {
+  private registrationError(
+    name: keyof RegistrationForm,
+    errors: ValidationErrors
+  ) {
     this.state.set('registration-form');
 
     this.cdr.detectChanges();
-    this.setErrorsRegistrationForm(name,
-      errors)
+    this.setErrorsRegistrationForm(name, errors);
   }
 
   private setPasswordFormRegistration() {
     if (this.passwordForm?.valid) {
-      const password = this.password?.value
+      const password = this.password?.value;
 
       if (typeof password === 'string') {
-        this.getControlRegistrationForm('password')?.setValue(
-          password
-        )
+        this.getControlRegistrationForm('password')?.setValue(password);
       }
     }
   }
 
   private registration$() {
-    const body = <RegistrationBody>{...this.registrationForm?.value};
+    const body = <RegistrationBody>{ ...this.registrationForm?.value };
     return this.userService.createUser$(body);
   }
 
-  private setErrorsRegistrationForm(name: keyof RegistrationForm, errors: ValidationErrors): void {
+  private setErrorsRegistrationForm(
+    name: keyof RegistrationForm,
+    errors: ValidationErrors
+  ): void {
     this.getControlRegistrationForm(name)?.setErrors(errors);
   }
 
-  public getControlRegistrationForm(name: keyof RegistrationForm): GetCommonFormControl {
+  public getControlRegistrationForm(
+    name: keyof RegistrationForm
+  ): GetCommonFormControl {
     return this.registrationForm?.controls[name] || null;
   }
-
 }

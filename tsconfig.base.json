@@ -20,5 +20,6 @@
     },
     "noPropertyAccessFromIndexSignature": true
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": ["node_modules", "tmp"],
+  "include": ["apps/frontend/**/*", "apps/frontend-profile/**/*"]
 }

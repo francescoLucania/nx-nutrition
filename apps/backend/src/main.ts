@@ -2,14 +2,14 @@ import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app/app.module';
-import {ConfigService} from "@nestjs/config";
+import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from './app/pipes/validation/validation';
 import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const globalPrefix = 'api';
-  const configService = app.get(ConfigService)
+  const configService = app.get(ConfigService);
   const port = configService.get('PORT') || 3000;
 
   app.use(cookieParser());
@@ -21,7 +21,6 @@ async function bootstrap() {
       `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
     );
   });
-
 }
 
 bootstrap();

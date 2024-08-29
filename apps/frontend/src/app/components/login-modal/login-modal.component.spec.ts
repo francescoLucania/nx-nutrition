@@ -18,9 +18,8 @@ describe('LoginModalComponent', () => {
         ApiService,
         UserService,
       ],
-      imports: [LoginModalComponent]
-    })
-    .compileComponents();
+      imports: [LoginModalComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(LoginModalComponent);
     component = fixture.componentInstance;
