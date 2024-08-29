@@ -2,9 +2,10 @@
   "root": true,
   "ignorePatterns": ["**/*"],
   "plugins": ["@nx"],
+  "parser": "@typescript-eslint/parser",
   "overrides": [
     {
-      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "files": ["*.ts"],
       "rules": {
         "@nx/enforce-module-boundaries": [
           "error",
@@ -22,17 +23,12 @@
       }
     },
     {
-      "files": ["*.ts", "*.tsx"],
+      "files": ["*.ts"],
       "extends": ["plugin:@nx/typescript"],
       "rules": {}
     },
     {
-      "files": ["*.js", "*.jsx"],
-      "extends": ["plugin:@nx/javascript"],
-      "rules": {}
-    },
-    {
-      "files": ["*.spec.ts", "*.spec.tsx", "*.spec.js", "*.spec.jsx"],
+      "files": ["*.spec.ts"],
       "env": {
         "jest": true
       },
