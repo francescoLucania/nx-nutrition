@@ -59,7 +59,7 @@
         "outputPath": "dist/apps/frontend",
         "index": "apps/frontend/src/index.html",
         "browser": "apps/frontend/src/main.ts",
-        "polyfills": ["zone.js", "es-module-shims"],
+        "polyfills": ["es-module-shims"],
         "tsConfig": "apps/frontend/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": ["apps/frontend/src/favicon.ico", "apps/frontend/src/assets"],

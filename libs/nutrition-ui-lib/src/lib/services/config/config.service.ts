@@ -11,7 +11,7 @@ export class ConfigService {
     return this.appConfig;
   }
 
-  constructor(@Optional() @Inject(CONFIG) private appConfig: Config) {
+  constructor(@Optional() @Inject(CONFIG) private readonly appConfig: Config) {
     if (!this.appConfig) {
       this.appConfig = {
         production: false,

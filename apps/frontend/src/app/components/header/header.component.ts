@@ -8,6 +8,7 @@ import {
   MediaQueriesService,
   ModalService,
   NavigateListComponent,
+  PopoverDirective,
 } from 'ngx-neo-ui';
 import { INavigateList } from 'ngx-neo-ui/lib/components/navigate-list/models/navigate';
 import { AsyncPipe, NgIf } from '@angular/common';
@@ -32,6 +33,7 @@ import { ThrobberComponent } from '../throbber/throbber.component';
     RouterLink,
     ThrobberComponent,
     IconComponent,
+    PopoverDirective,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',

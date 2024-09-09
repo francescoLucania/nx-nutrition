@@ -2,8 +2,8 @@
 
 .main-header {
   padding: 24px 0;
-  border-bottom: 1px solid var(--colorLightest);
   background: #fff;
+  box-shadow: 0 1px var(--colorLightest);
 
   @include theme.mq(md) {
     padding: 32px 0;
@@ -16,7 +16,6 @@
   }
 
   &__navigate-menu,
-  &__navigate-logotype,
   &__user-menu {
     @include theme.mq(md) {
       width: 33.33%;
@@ -59,11 +58,23 @@
   }
 
   &__user-menu {
-    //margin-left: auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  &__social-links {
+    display: flex;
+    margin-right: 16px;
 
     @include theme.mq(md) {
-      display: flex;
-      justify-content: flex-end;
+      margin-right: 32px;
+    }
+
+    a {
+      &:not(:first-child) {
+        margin-left: 16px;
+      }
     }
   }
 }

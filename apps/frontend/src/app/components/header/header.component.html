@@ -13,6 +13,23 @@
       </a>
 
       <div class="main-header__user-menu">
+        <div class="main-header__social-links">
+          <a href="">
+            <nutrition-icon [name]="'telegram'" [class]="'burger icon--24'">
+            </nutrition-icon>
+          </a>
+
+          <a href="">
+            <nutrition-icon [name]="'whatsapp'" [class]="'burger icon--24'">
+            </nutrition-icon>
+          </a>
+
+          <a href="">
+            <nutrition-icon [name]="'vkontakte'" [class]="'burger icon--24'">
+            </nutrition-icon>
+          </a>
+        </div>
+
         @if (user()) {
         <div class="mr-16">
           Здравствуйте <b>{{ user()?.name }}</b>
@@ -20,12 +37,19 @@
         } @if (isDesktop()?.deviceType === 'lg') {
         <neo-ui-button [link]="'profile'"> Личный кабинет </neo-ui-button>
         } @else {
-        <button type="button">
+        <button type="button" [openNeoPopoverFromTemplate]="mobileMenu">
           <nutrition-icon [name]="'burger'" [class]="'burger icon--40'">
           </nutrition-icon>
         </button>
         }
       </div>
+
+      <ng-template #mobileMenu>
+        <neo-ui-navigate-list
+          [type]="'vertical'"
+          [navigate]="mainMenu"
+        ></neo-ui-navigate-list>
+      </ng-template>
     </div>
   </div>
 </header>

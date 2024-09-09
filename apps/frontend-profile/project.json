@@ -61,7 +61,7 @@
         "outputPath": "dist/apps/frontend-profile",
         "index": "apps/frontend-profile/src/index.html",
         "browser": "apps/frontend-profile/src/main.ts",
-        "polyfills": ["zone.js", "es-module-shims"],
+        "polyfills": ["es-module-shims"],
         "tsConfig": "apps/frontend-profile/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
